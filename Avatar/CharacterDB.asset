@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d57480dc1cfb64c8deeca3b0a77fc6, type: 3}
+  m_Name: CharacterDB
+  m_EditorClassIdentifier: 
+  character:
+  - characterName: Male 1
+    characters3D: {fileID: 7354235147383070526, guid: 4c8d984b6f7b38b4d9a5cc1af14d7eb8,
+      type: 3}
+  - characterName: Male 2
+    characters3D: {fileID: 7540703049945985167, guid: cef8647d0bb448f46a8630819bd0e356,
+      type: 3}
+  - characterName: Male 3
+    characters3D: {fileID: 5736339043428458668, guid: 63dae4a0a8089c94b8d7a29451131e87,
+      type: 3}
+  - characterName: Male 4
+    characters3D: {fileID: 4152603834682401294, guid: a667dd017cd281b4f8002980706b5e46,
+      type: 3}
+  - characterName: Male 5
+    characters3D: {fileID: 4037872103182852197, guid: 63eaf65bf74ebf1459730b9f7a123fa5,
+      type: 3}
