@@ -8,7 +8,7 @@ public class ButtontoMap : MonoBehaviour
     // The name of the scene you want to load
     public string Map;
 
-    private void OnMouseUpAsButton()
+    public void OnMouseUpAsButton()
     {
         // Load the specified scene
         SceneManager.LoadScene(Map);

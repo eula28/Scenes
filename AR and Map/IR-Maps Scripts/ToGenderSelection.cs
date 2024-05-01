@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class CubeButton : MonoBehaviour
+public class ButtonGenderSelection : MonoBehaviour
 {
     // The name of the scene you want to load
-    public string test;
+    public string GenderSelection;
 
-    private void OnMouseUpAsButton()
+    public void OnMouseUpAsButton()
     {
         // Load the specified scene
-        SceneManager.LoadScene(test);
+        SceneManager.LoadScene(GenderSelection);
     }
 }
