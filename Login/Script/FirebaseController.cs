@@ -15,6 +15,16 @@ using UnityEngine.SceneManagement;
 
 public class FirebaseController : MonoBehaviour
 {
+
+    // Singleton instance
+    private static FirebaseController instance;
+
+    // Public static property to access the instance
+    public static FirebaseController Instance
+    {
+        get { return instance; }
+    }
+
     // UI Panels
     public GameObject welcomePanel, loginPanel, signupPanel, profilePanel, forgetpassPanel, alertPanel;
 
@@ -30,13 +40,25 @@ public class FirebaseController : MonoBehaviour
 
     // Firebase Variables
     Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
-    Firebase.Auth.FirebaseAuth auth;
-    Firebase.Auth.FirebaseUser user;
+    public Firebase.Auth.FirebaseAuth auth;
+    public Firebase.Auth.FirebaseUser user;
     bool isSignIn = false;
+
+    // Ensure the constructor is private to prevent external instantiation
+    private FirebaseController() { }
 
     // Awake is called when the script instance is being loaded
     void Awake()
     {
+        // Singleton instance initialization
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
         // Initialize Google Sign-In Configuration
         configuration = new GoogleSignInConfiguration
         {
@@ -73,7 +95,6 @@ public class FirebaseController : MonoBehaviour
         welcomePanel.SetActive(true);
         loginPanel.SetActive(false);
         signupPanel.SetActive(false);
-        profilePanel.SetActive(false);
         forgetpassPanel.SetActive(false);
     }
 
@@ -84,7 +105,6 @@ public class FirebaseController : MonoBehaviour
         welcomePanel.SetActive(false);
         loginPanel.SetActive(true);
         signupPanel.SetActive(false);
-        profilePanel.SetActive(false);
         forgetpassPanel.SetActive(false);
         // Clear login input fields
         loginEmail.text = "";
@@ -98,7 +118,6 @@ public class FirebaseController : MonoBehaviour
         welcomePanel.SetActive(false);
         loginPanel.SetActive(false);
         signupPanel.SetActive(true);
-        profilePanel.SetActive(false);
         forgetpassPanel.SetActive(false);
         // Clear sign up input fields
         signupUsername.text = "";
@@ -111,13 +130,9 @@ public class FirebaseController : MonoBehaviour
     public void OpenProfilePanel()
     {
         // Show Profile Panel and hide others
-        welcomePanel.SetActive(false);
-        loginPanel.SetActive(false);
-        signupPanel.SetActive(false);
-        profilePanel.SetActive(true);
-        forgetpassPanel.SetActive(false);
+        SceneManager.LoadScene("Account");
         // Retrieve and display user data
-        GetUserData(user.UserId);
+
     }
 
     // Open Forget Password Panel
@@ -127,7 +142,6 @@ public class FirebaseController : MonoBehaviour
         welcomePanel.SetActive(false);
         loginPanel.SetActive(false);
         signupPanel.SetActive(false);
-        profilePanel.SetActive(false);
         forgetpassPanel.SetActive(true);
     }
 
@@ -144,7 +158,6 @@ public class FirebaseController : MonoBehaviour
         {
             // Attempt to log in user
             SignUserIn(loginEmail.text, loginPassword.text);
-            SceneManager.LoadScene("Account");
         }
     }
 
@@ -232,8 +245,8 @@ public class FirebaseController : MonoBehaviour
             GoogleSignIn.DefaultInstance.SignOut();
         }
         // Clear profile data and open login panel
-        profileUsernameText.text = "";
-        profileEmailText.text = "";
+        //profileUsernameText.text = "";
+        //profileEmailText.text = "";
         SceneManager.LoadScene("Welcome-Screen");
     }
 
@@ -310,7 +323,7 @@ public class FirebaseController : MonoBehaviour
                 // Create a Firestore document for the user
                 CreateFirestoreDocument(result.User.UserId, email, username, "Email and Password");
                 // Open profile panel after successful creation
-                OpenProfilePanel();
+                SceneManager.LoadScene("GenderSelection");
             }
         });
     }
@@ -350,38 +363,6 @@ public class FirebaseController : MonoBehaviour
                 OpenProfilePanel();
             }
         });
-    }
-
-    // Update User Profile
-    void UpdateUserProfile(string username)
-    {
-        // Update user profile display name
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
-        if (user != null)
-        {
-            Firebase.Auth.UserProfile profile = new Firebase.Auth.UserProfile
-            {
-                DisplayName = username,
-                PhotoUrl = new System.Uri("https://placehold.co/600x400"),
-            };
-            user.UpdateUserProfileAsync(profile).ContinueWith(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("UpdateUserProfileAsync was canceled.");
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("UpdateUserProfileAsync encountered an error: " + task.Exception);
-                    return;
-                }
-
-                Debug.Log("User profile updated successfully.");
-                ShowAlert("Account Successfully Signed Up");
-                OpenProfilePanel();
-            });
-        }
     }
 
     // Update is called once per frame
@@ -516,11 +497,20 @@ public class FirebaseController : MonoBehaviour
     // Create Firestore Document for User
     void CreateFirestoreDocument(string userId, string email, string username, string type)
     {
+        System.DateTime currentDateTime = System.DateTime.Now;
+        string formattedDateTime = currentDateTime.ToString("MM/dd/yyyy");
         Dictionary<string, object> userDocData = new Dictionary<string, object>
         {
             { "email", email },
             { "username", username },
-            { "user type", type }
+            { "user type", type },
+            { "model", 0 },
+            { "bday", "" },
+            { "gender", "" },
+            { "distance walked", 0 },
+            { "task achieved", 0},
+            { "landmark visited", 0},
+            { "date start", formattedDateTime}
             // Add more user data if needed
         };
 
@@ -583,7 +573,7 @@ public class FirebaseController : MonoBehaviour
     }
 
     // Retrieve User Data from Firestore
-    async void GetUserData(string userId)
+    public async void GetUserData(string userId, Action<string, string, int, int, int, string> callback)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userDocRef = db.Collection("users").Document(userId);
@@ -594,10 +584,13 @@ public class FirebaseController : MonoBehaviour
             // Access the data from the document
             string email = doc.GetValue<string>("email");
             string username = doc.GetValue<string>("username");
+            int distance = doc.GetValue<int>("distance walked");
+            int task = doc.GetValue<int>("task achieved");
+            int landmark = doc.GetValue<int>("landmark visited");
+            string datestart = doc.GetValue<string>("date start");
 
-            // Display the data in Unity UI
-            profileEmailText.text = email;
-            profileUsernameText.text = username;
+            // Pass the data to the callback function
+            callback(email, username, distance, task, landmark, datestart);
         }
         else
         {
