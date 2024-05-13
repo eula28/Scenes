@@ -28,3 +28,18 @@ MonoBehaviour:
   - characterName: Male 5
     characters3D: {fileID: 4037872103182852197, guid: 63eaf65bf74ebf1459730b9f7a123fa5,
       type: 3}
+  - characterName: Female 1
+    characters3D: {fileID: 7416294101325945194, guid: 7a41032d2c1e69c43a0b66cd86e61079,
+      type: 3}
+  - characterName: Female 2
+    characters3D: {fileID: 1558820197915162322, guid: e94b31a3d9e5b75409592fd77f272455,
+      type: 3}
+  - characterName: Female 3
+    characters3D: {fileID: 5851099044317199021, guid: 4c3e85be85ecd20478646a18903a2de1,
+      type: 3}
+  - characterName: Female 4
+    characters3D: {fileID: 610821479698749726, guid: 872dae979c2bff2489860ad0b3defbfc,
+      type: 3}
+  - characterName: Female 5
+    characters3D: {fileID: 5802444517743237754, guid: 3dae95ddc99743e49add5af0d1bc0cb8,
+      type: 3}
