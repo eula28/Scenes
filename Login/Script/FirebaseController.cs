@@ -234,7 +234,7 @@ public class FirebaseController : MonoBehaviour
         // Clear profile data and open login panel
         profileUsernameText.text = "";
         profileEmailText.text = "";
-        OpenLogInPanel();
+        SceneManager.LoadScene("Welcome-Screen");
     }
 
     // Initialize Firebase
