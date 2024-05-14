@@ -74,13 +74,19 @@ public class SampleWebView : MonoBehaviour
                 ");
 #endif
 #endif
+                // Add the JavaScript code to override getCurrentPosition method
+                webViewObject.EvaluateJS(@"
+                    navigator.geolocation.getCurrentPosition = function(success, error, options) {
+                        var defaultOpts = { enableHighAccuracy: true, timeout: Infinity, maximumAge: 0 };
+                        options = Object.assign(defaultOpts, options);
+                        window.Unity.call('navigator.geolocation.getCurrentPosition');
+                    };
+                ");
+
                 webViewObject.EvaluateJS(@"Unity.call('ua=' + navigator.userAgent)");
             },
-            //ua: "custom user agent string",
             enableWKWebView: true);
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-        webViewObject.bitmapRefreshCycle = 1;
-#endif
+        
         webViewObject.SetMargins(2, 0, 2, Screen.height / 7);
         webViewObject.SetVisibility(true);
 
@@ -129,23 +135,4 @@ public class SampleWebView : MonoBehaviour
 #endif
         yield break;
     }
-
-#if !UNITY_WEBPLAYER
-    //void OnGUI()
-    //{
-    //    GUI.enabled = webViewObject.CanGoBack();
-    //    if (GUI.Button(new Rect(10, 10, 80, 80), "<")) {
-    //        webViewObject.GoBack();
-    //    }
-    //    GUI.enabled = true;
-
-    //    GUI.enabled = webViewObject.CanGoForward();
-    //    if (GUI.Button(new Rect(100, 10, 80, 80), ">")) {
-    //        webViewObject.GoForward();
-    //    }
-    //    GUI.enabled = true;
-
-    //    GUI.TextField(new Rect(200, 10, 300, 80), "" + webViewObject.Progress());
-    //}
-#endif
 }
