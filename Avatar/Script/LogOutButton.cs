@@ -9,6 +9,8 @@ public class LogoutButton : MonoBehaviour
         {
             // Call the LogOut function from the FirebaseController instance
             FirebaseController.Instance.LogOut();
+            // Destroy the FirebaseController instance
+            Destroy(FirebaseController.Instance.gameObject);
         }
         else
         {
