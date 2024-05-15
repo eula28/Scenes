@@ -1447,7 +1447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Alex
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5ff2847afb1ca74d9e00ceeda67f283, type: 2}
   m_sharedMaterial: {fileID: -3488958872866268455, guid: c5ff2847afb1ca74d9e00ceeda67f283,
@@ -1475,8 +1475,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3002,7 +3002,7 @@ PrefabInstance:
     - target: {fileID: 3719406383740057942, guid: 0594e8545370a044f8143a750f509e30,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.801
+      value: -0.69
       objectReference: {fileID: 0}
     - target: {fileID: 3719406383740057942, guid: 0594e8545370a044f8143a750f509e30,
         type: 3}
@@ -4160,7 +4160,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Alex
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5ff2847afb1ca74d9e00ceeda67f283, type: 2}
   m_sharedMaterial: {fileID: -3488958872866268455, guid: c5ff2847afb1ca74d9e00ceeda67f283,
@@ -4381,3 +4381,4 @@ SceneRoots:
   - {fileID: 1400203194}
   - {fileID: 1032317005}
   - {fileID: 1259623372}
+  - {fileID: 1218894614}

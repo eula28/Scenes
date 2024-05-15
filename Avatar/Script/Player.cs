@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
         MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
         art3d.material = meshRenderer.sharedMaterial;
         art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.88, (float)0.4499969);
+        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
         characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
         characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
 
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
         MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
         art3d.material = meshRenderer.sharedMaterial;
         art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.88, (float)0.4499969);
+        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
         characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
         characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
     }

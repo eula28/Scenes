@@ -7,7 +7,9 @@ using TMPro;
 public class AvatarGender : MonoBehaviour
 {
 
-    public TextMeshProUGUI birthday;
+    public TextMeshProUGUI Month;
+    public TextMeshProUGUI Date;
+    public TextMeshProUGUI Year;
     public TextMeshProUGUI gender;
     public Button next;
     // Create a public variable to store the gender value
@@ -37,7 +39,7 @@ public class AvatarGender : MonoBehaviour
     void Update()
     {
         gen = gender.text;
-        bday = birthday.text;
+        bday = Month.text +"/"+ Date.text +"/"+ Year.text;
         checkValue();
     }
     void checkValue()
