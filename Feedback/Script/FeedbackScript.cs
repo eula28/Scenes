@@ -2,53 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    public GameObject star1, star2, star3, star4, star5;
+    public Button[] stars;
     public TMP_InputField feedbackEmail, feedbackLocation, feedbackComment;
     public int feedbackRating = 0;
-    
-    public void starOne() {
-        GameObject.Find("star1").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        feedbackRating = 1;
-        Debug.Log("Star Rated: " + feedbackRating);
+
+    void Start()
+    {
+        for (int i = 0; i < stars.Length; i++)
+        {
+            int index = i + 1;
+            stars[i].onClick.AddListener(() => StarClicked(index));
+        }
     }
 
-    public void starTwo()
-    {
-        GameObject.Find("star1").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star2").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        feedbackRating = 2;
-        Debug.Log("Star Rated: " + feedbackRating);
-    }
+    private Color STAR_COLOR = Color.green;
 
-    public void starThree()
-    {
-        GameObject.Find("star1").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star2").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star3").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        feedbackRating = 3;
-        Debug.Log("Star Rated: " + feedbackRating);
-    }
 
-    public void starFour()
+    public void StarClicked(int rating)
     {
-        GameObject.Find("star1").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star2").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star3").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star4").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        feedbackRating = 4;
-        Debug.Log("Star Rated: " + feedbackRating);
-    }
-    public void starFive()
-    {
-        GameObject.Find("star1").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star2").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star3").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star4").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        GameObject.Find("star5").GetComponent<Renderer>().material.color = new Color(103, 203, 71);
-        feedbackRating = 5;
+        feedbackRating = rating;
+        for (int i = 0; i < stars.Length; i++)
+        {
+            Image starImage = stars[i].GetComponent<Image>();
+            Color color = i < rating ? STAR_COLOR : Color.white;
+            starImage.color = color;
+        }
         Debug.Log("Star Rated: " + feedbackRating);
     }
 }
