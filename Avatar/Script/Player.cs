@@ -1,25 +1,39 @@
+using Firebase.Extensions;
+using Firebase.Firestore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public CharacterDatabase characterDB;
     public MeshRenderer art3d;
     public static int pick;
-    private int selectedOption = 0;
+    private int selectedOption;
+    private string gender;
 
     void Start()
     {
+        if (FirebaseController.Instance != null)
+        {
+            FirebaseController.Instance.GetUserModelGender(FirebaseController.Instance.user.UserId, DisplayUserModelGender);
+            
+        }
+        else
+        {
+            Debug.LogError("FirebaseController instance not found.");
+        }
+
         if (!PlayerPrefs.HasKey("selectedOption"))
         {
             selectedOption = 0;
         }
         else
         {
-
             Load();
         }
+        
         int p = StyleBtn.p;
         Debug.Log(p);
         if (p == 1)
@@ -66,8 +80,6 @@ public class Player : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        string gender = AvatarGender.val;
-
         if (gender == "Male-Avatar")
         {
             Debug.LogWarning(gender);
@@ -89,6 +101,11 @@ public class Player : MonoBehaviour
         characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
     }
 
-
+    private void DisplayUserModelGender(string gendermodel, int modelnumber)
+    {
+        selectedOption = modelnumber;
+        gender = gendermodel;
+        Debug.Log("gender: " + gendermodel + " model: " + modelnumber);
+    }
 }
 

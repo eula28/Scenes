@@ -597,4 +597,25 @@ public class FirebaseController : MonoBehaviour
             Debug.Log("Document does not exist for user: " + userId);
         }
     }
+
+    public async void GetUserModelGender(string userId, Action<string, int> callback)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        DocumentReference userDocRef = db.Collection("users").Document(userId);
+
+        DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
+        if (doc.Exists)
+        {
+            // Access the data from the document
+            string gendermodel = doc.GetValue<string>("gender model");
+            int modelnumber = doc.GetValue<int>("model number");
+
+            // Pass the data to the callback function
+            callback(gendermodel, modelnumber);
+        }
+        else
+        {
+            Debug.Log("Document does not exist for user: " + userId);
+        }
+    }
 }

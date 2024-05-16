@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NewBehaviourScript : MonoBehaviour
@@ -69,8 +70,11 @@ public class NewBehaviourScript : MonoBehaviour
                         Debug.LogError("Failed to submit feedback: " + task.Exception);
                         return;
                     }
-
-                    Debug.Log("Feedback submitted successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+                    else
+                    {
+                        SceneManager.LoadScene("IR1");
+                        Debug.Log("Feedback submitted successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+                    }
                 });
             }
         }

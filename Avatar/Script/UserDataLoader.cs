@@ -34,5 +34,5 @@ public class UserDataLoader : MonoBehaviour
         profileTaskText.text = task.ToString();
         profileLandmarkText.text = landmark.ToString();
         profileDateStartText.text = datestart;
-}
+    }
 }

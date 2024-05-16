@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using UnityEngine.SceneManagement;
 
 public class AvatarGender : MonoBehaviour
 {
@@ -99,8 +100,11 @@ public class AvatarGender : MonoBehaviour
                     Debug.LogError("Failed to update user data: " + task.Exception);
                     return;
                 }
-
-                Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+                else 
+                {
+                    SceneManager.LoadScene("StyleSelection");
+                    Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+                }
             });
         }
         else
