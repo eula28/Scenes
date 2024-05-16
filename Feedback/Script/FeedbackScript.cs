@@ -1,3 +1,5 @@
+using Firebase.Extensions;
+using Firebase.Firestore;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -33,4 +35,49 @@ public class NewBehaviourScript : MonoBehaviour
         }
         Debug.Log("Star Rated: " + feedbackRating);
     }
+
+    public void submitFeedback()
+    {
+        if (FirebaseController.Instance != null)
+        {
+            if (string.IsNullOrEmpty(feedbackEmail.text) && string.IsNullOrEmpty(feedbackLocation.text) && string.IsNullOrEmpty(feedbackComment.text) && feedbackRating == 0)
+            {
+                FirebaseController.Instance.ShowAlert("Kindly fill out all required fields.");
+                return;
+            }
+            else
+            {
+                System.DateTime currentDateTime = System.DateTime.Now;
+                string formattedDateTime = currentDateTime.ToString("MM/dd/yyyy");
+                Dictionary<string, object> userFeedback = new Dictionary<string, object>
+                {
+                    { "user id", FirebaseController.Instance.auth.CurrentUser.UserId },
+                    { "email", feedbackEmail.text },
+                    { "location", feedbackLocation.text },
+                    { "feedback rating", feedbackRating },
+                    { "feedback comment", feedbackComment.text },
+                    { "date start", formattedDateTime }
+                };
+
+                FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+                CollectionReference feedbackCollectionRef = db.Collection("feedback");
+
+                feedbackCollectionRef.AddAsync(userFeedback).ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        Debug.LogError("Failed to submit feedback: " + task.Exception);
+                        return;
+                    }
+
+                    Debug.Log("Feedback submitted successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+                });
+            }
+        }
+        else
+        {
+            Debug.LogError("FirebaseController instance not found.");
+        }
+    }
+
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Firebase.Firestore;
+using Firebase.Extensions;
 
 public class AvatarGender : MonoBehaviour
 {
@@ -74,4 +76,37 @@ public class AvatarGender : MonoBehaviour
         Debug.Log(nbtn);
 
     }
+
+    public void updateUserDoc()
+    {
+        if (FirebaseController.Instance != null)
+        {
+            Dictionary<string, object> userUpdate = new Dictionary<string, object>
+            {
+                { "gender model", val},
+                { "bday", bday },
+                { "gender", gen }
+            };
+
+            string userId = FirebaseController.Instance.auth.CurrentUser.UserId;
+            FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+            DocumentReference userUpdateDocRef = db.Collection("users").Document(userId);
+
+            userUpdateDocRef.UpdateAsync(userUpdate).ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("Failed to update user data: " + task.Exception);
+                    return;
+                }
+
+                Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+            });
+        }
+        else
+        {
+            Debug.LogError("FirebaseController instance not found.");
+        }
+    }
+
 }
