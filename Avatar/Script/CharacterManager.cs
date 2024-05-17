@@ -32,6 +32,11 @@ public class CharacterManager : MonoBehaviour
 
     private IEnumerator InitializeCharacter()
     {
+        // Destroy all previous children (previously instantiated models)
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
         yield return new WaitUntil(() => isDataLoaded);
         Debug.Log("Data loaded from Firebase.");
         UpdateCharacter(selectedOption);

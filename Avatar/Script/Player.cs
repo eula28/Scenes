@@ -17,17 +17,26 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Fetching user model gender from Firebase...");
             FirebaseController.Instance.GetUserModelGender(FirebaseController.Instance.user.UserId, DisplayUserModelGender);
+
         }
         else
         {
             Debug.LogError("FirebaseController instance not found.");
         }
+       StartCoroutine(InitializeCharacter());
+        
 
-        StartCoroutine(InitializeCharacter());
     }
-
+    
+       
+       
+    
     private IEnumerator InitializeCharacter()
     {
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
         yield return new WaitUntil(() => isDataLoaded);
         Debug.Log("Data loaded from Firebase.");
         UpdateCharacter(selectedOption);

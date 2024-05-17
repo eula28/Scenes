@@ -44,14 +44,7 @@ public class AvatarGender : MonoBehaviour
     {
         gen = gender.text;
         bday = Month.text +"/"+ Date.text +"/"+ Year.text;
-        if (gender.text == "Female-Avatar")
-        {
-            modelnum = 5;
-        }
-        if (gender.text == "Male-Avatar")
-        {
-            modelnum = 0;
-        }
+       
         checkValue();
     }
     void checkValue()
@@ -72,6 +65,7 @@ public class AvatarGender : MonoBehaviour
     {
         genderValue = "Male-Avatar";
         val = genderValue;
+        modelnum = 0;
     }
 
     // Define the FemaleButton() method
@@ -79,6 +73,7 @@ public class AvatarGender : MonoBehaviour
     {
         genderValue = "Female-Avatar";
         val = genderValue;
+        modelnum = 5;
     }
     public void TaskOnClick()
     {
