@@ -1,7 +1,6 @@
 using Firebase.Extensions;
 using Firebase.Firestore;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,41 +11,58 @@ public class Player : MonoBehaviour
     public static int pick;
     private int selectedOption;
     private string gender;
+    private bool isDataLoaded = false;
 
     void Start()
     {
         if (FirebaseController.Instance != null)
         {
+            Debug.Log("Fetching user model gender from Firebase...");
             FirebaseController.Instance.GetUserModelGender(FirebaseController.Instance.user.UserId, DisplayUserModelGender);
-            
         }
         else
         {
             Debug.LogError("FirebaseController instance not found.");
         }
 
+        StartCoroutine(InitializeCharacter());
+    }
+
+    private IEnumerator InitializeCharacter()
+    {
+        // Wait until data from Firebase is loaded
+        yield return new WaitUntil(() => isDataLoaded);
+        Debug.Log("Data loaded from Firebase.");
+
         if (!PlayerPrefs.HasKey("selectedOption"))
         {
             selectedOption = 0;
+            Debug.Log("No selectedOption in PlayerPrefs. Defaulting to 0.");
         }
         else
         {
             Load();
+            Debug.Log("Loaded selectedOption from PlayerPrefs: " + selectedOption);
         }
-        
+
         int p = StyleBtn.p;
-        Debug.Log(p);
-        if (p == 1)
+        Debug.Log("StyleBtn.p: " + p);
+
+        if (art3d != null)
         {
             Destroy(art3d.gameObject);
+        }
+
+        if (p == 1)
+        {
+            Debug.Log("Updating character with selectedOption: " + selectedOption);
             UpdateCharacter(selectedOption);
         }
         else
         {
-            Destroy(art3d.gameObject);
+            Debug.Log("Starting character with selectedOption: " + selectedOption);
             Starter(selectedOption);
         }
-
     }
 
     private void UpdateCharacter(int selectedOption)
@@ -56,23 +72,27 @@ public class Player : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-
         Character character = characterDB.GetCharacter(selectedOption);
+        if (character == null)
+        {
+            Debug.LogError("Character not found for selectedOption: " + selectedOption);
+            return;
+        }
+
         GameObject characterObject = Instantiate(character.characters3D);
         MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
         art3d.material = meshRenderer.sharedMaterial;
         art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
-        characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
-        characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
-
+        characterObject.transform.position = new Vector3(-0.37f, -0.69f, 0.45f);
+        characterObject.transform.rotation = Quaternion.Euler(19.454f, 196.335f, 4.901f);
+        characterObject.transform.localScale = new Vector3(1.89441f, 1.498345f, 1f);
     }
 
     private void Load()
     {
         selectedOption = PlayerPrefs.GetInt("selectedOption");
     }
-    
+
     private void Starter(int selectedOption)
     {
         foreach (Transform child in transform)
@@ -82,30 +102,36 @@ public class Player : MonoBehaviour
 
         if (gender == "Male-Avatar")
         {
-            Debug.LogWarning(gender);
+            Debug.Log("Gender is Male-Avatar, setting selectedOption to 0.");
             selectedOption = 0;
         }
         else
         {
-            Debug.LogWarning(gender);
+            Debug.Log("Gender is not Male-Avatar, setting selectedOption to 5.");
             selectedOption = 5;
         }
 
         Character character = characterDB.GetCharacter(selectedOption);
+        if (character == null)
+        {
+            Debug.LogError("Character not found for selectedOption: " + selectedOption);
+            return;
+        }
+
         GameObject characterObject = Instantiate(character.characters3D);
         MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
         art3d.material = meshRenderer.sharedMaterial;
         art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
-        characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
-        characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
+        characterObject.transform.position = new Vector3(-0.37f, -0.69f, 0.45f);
+        characterObject.transform.rotation = Quaternion.Euler(19.454f, 196.335f, 4.901f);
+        characterObject.transform.localScale = new Vector3(1.89441f, 1.498345f, 1f);
     }
 
     private void DisplayUserModelGender(string gendermodel, int modelnumber)
     {
+        Debug.Log("Received gender: " + gendermodel + ", model number: " + modelnumber);
         selectedOption = modelnumber;
         gender = gendermodel;
-        Debug.Log("gender: " + gendermodel + " model: " + modelnumber);
+        isDataLoaded = true;
     }
 }
-

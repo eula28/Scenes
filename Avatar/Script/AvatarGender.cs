@@ -102,7 +102,7 @@ public class AvatarGender : MonoBehaviour
                 }
                 else 
                 {
-                    SceneManager.LoadScene("StyleSelection");
+                    SceneManager.LoadScene("Account");
                     Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
                 }
             });
