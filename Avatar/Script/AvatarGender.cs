@@ -21,6 +21,7 @@ public class AvatarGender : MonoBehaviour
     public static int nbtn;
     public string gen;
     public string bday;
+    public int modelnum;
 
     // Get a reference to the buttons in the Unity inspector
     public Button maleButton;
@@ -43,11 +44,19 @@ public class AvatarGender : MonoBehaviour
     {
         gen = gender.text;
         bday = Month.text +"/"+ Date.text +"/"+ Year.text;
+        if (gender.text == "Female-Avatar")
+        {
+            modelnum = 5;
+        }
+        if (gender.text == "Male-Avatar")
+        {
+            modelnum = 0;
+        }
         checkValue();
     }
     void checkValue()
     {
-        if (bday != "" && gen != "" && genderValue != "")
+        if (Month.text != "" && Date.text != "" && Year.text != "" && gen != "" && genderValue != "")
         {
             next.gameObject.SetActive(true);
 
@@ -86,7 +95,8 @@ public class AvatarGender : MonoBehaviour
             {
                 { "gender model", val},
                 { "bday", bday },
-                { "gender", gen }
+                { "gender", gen },
+                { "model number", modelnum}
             };
 
             string userId = FirebaseController.Instance.auth.CurrentUser.UserId;
