@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using ReadyPlayerMe.Core.WebView;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Collections.Generic;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -14,8 +13,8 @@ public class CharacterManager : MonoBehaviour
     public MeshRenderer art3d;
     public TextMeshProUGUI nameText;
     private int selectedOption;
-    private int check = 0;
     private string gender;
+    private bool isDataLoaded = false;
 
     void Start()
     {
@@ -28,30 +27,14 @@ public class CharacterManager : MonoBehaviour
             Debug.LogError("FirebaseController instance not found.");
         }
 
-        if (!PlayerPrefs.HasKey("selectedOption"))
-        {
-            selectedOption = 0;
-        }
-        else
-        {
-            Load();
-        }
+        StartCoroutine(InitializeCharacter());
+    }
 
-        if (gender == "Male-Avatar" && check == 0)
-        {
-            selectedOption = 0;
-            check = 1;
-        }
-        else if (gender == "Female-Avatar" && check == 0)
-        {
-            selectedOption = 5;
-            check = 1;
-        }
-
-        if (check == 1)
-        {
-            UpdateCharacter(selectedOption);
-        }
+    private IEnumerator InitializeCharacter()
+    {
+        yield return new WaitUntil(() => isDataLoaded);
+        Debug.Log("Data loaded from Firebase.");
+        UpdateCharacter(selectedOption);
     }
 
     public void NextOption()
@@ -96,8 +79,6 @@ public class CharacterManager : MonoBehaviour
                 selectedOption = minFemaleIndex;
             }
         }
-        PlayerPrefs.SetInt("selectedOption", selectedOption);
-        PlayerPrefs.Save();
     }
 
     private void UpdateCharacter(int selectedOption)
@@ -118,14 +99,17 @@ public class CharacterManager : MonoBehaviour
         art3d = meshRenderer;
         nameText.text = character.characterName;
 
-        characterObject.transform.position = new Vector3((float)-0.29, (float)-1.055561, (float)0.4895401);
-        characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)20, (float)180, (float)0);
-        characterObject.transform.localScale = new Vector3((float)1, (float)1, (float)1);
+        characterObject.transform.position = new Vector3(-0.29f, -1.055561f, 0.4895401f);
+        characterObject.transform.rotation = Quaternion.Euler(20f, 180f, 0f);
+        characterObject.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
-    private void Load()
+    private void DisplayUserModelGender(string gendermodel, int modelnumber)
     {
-        selectedOption = PlayerPrefs.GetInt("selectedOption", 0);
+        selectedOption = modelnumber;
+        gender = gendermodel;
+        isDataLoaded = true;
+        Debug.Log("gender: " + gendermodel + " model: " + modelnumber);
     }
 
     public void Save()
@@ -136,13 +120,6 @@ public class CharacterManager : MonoBehaviour
     public void ChangeScene(int sceneID)
     {
         SceneManager.LoadScene(sceneID);
-    }
-
-    private void DisplayUserModelGender(string gendermodel, int modelnumber)
-    {
-        selectedOption = modelnumber;
-        gender = gendermodel;
-        Debug.Log("gender: " + gendermodel + " model: " + modelnumber);
     }
 
     public void updateUserModel()
@@ -178,5 +155,3 @@ public class CharacterManager : MonoBehaviour
         }
     }
 }
-
-

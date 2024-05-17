@@ -1,14 +1,12 @@
-using Firebase.Extensions;
-using Firebase.Firestore;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Firebase.Firestore;
+using Firebase.Extensions;
 
 public class Player : MonoBehaviour
 {
     public CharacterDatabase characterDB;
     public MeshRenderer art3d;
-    public static int pick;
     private int selectedOption;
     private string gender;
     private bool isDataLoaded = false;
@@ -30,39 +28,9 @@ public class Player : MonoBehaviour
 
     private IEnumerator InitializeCharacter()
     {
-        // Wait until data from Firebase is loaded
         yield return new WaitUntil(() => isDataLoaded);
         Debug.Log("Data loaded from Firebase.");
-
-        if (!PlayerPrefs.HasKey("selectedOption"))
-        {
-            selectedOption = 0;
-            Debug.Log("No selectedOption in PlayerPrefs. Defaulting to 0.");
-        }
-        else
-        {
-            Load();
-            Debug.Log("Loaded selectedOption from PlayerPrefs: " + selectedOption);
-        }
-
-        int p = StyleBtn.p;
-        Debug.Log("StyleBtn.p: " + p);
-
-        if (art3d != null)
-        {
-            Destroy(art3d.gameObject);
-        }
-
-        if (p == 1)
-        {
-            Debug.Log("Updating character with selectedOption: " + selectedOption);
-            UpdateCharacter(selectedOption);
-        }
-        else
-        {
-            Debug.Log("Starting character with selectedOption: " + selectedOption);
-            Starter(selectedOption);
-        }
+        UpdateCharacter(selectedOption);
     }
 
     private void UpdateCharacter(int selectedOption)
@@ -88,48 +56,9 @@ public class Player : MonoBehaviour
         characterObject.transform.localScale = new Vector3(1.89441f, 1.498345f, 1f);
     }
 
-    private void Load()
-    {
-        selectedOption = PlayerPrefs.GetInt("selectedOption");
-    }
-
-    private void Starter(int selectedOption)
-    {
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        if (gender == "Male-Avatar")
-        {
-            Debug.Log("Gender is Male-Avatar, setting selectedOption to 0.");
-            selectedOption = 0;
-        }
-        else
-        {
-            Debug.Log("Gender is not Male-Avatar, setting selectedOption to 5.");
-            selectedOption = 5;
-        }
-
-        Character character = characterDB.GetCharacter(selectedOption);
-        if (character == null)
-        {
-            Debug.LogError("Character not found for selectedOption: " + selectedOption);
-            return;
-        }
-
-        GameObject characterObject = Instantiate(character.characters3D);
-        MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
-        art3d.material = meshRenderer.sharedMaterial;
-        art3d = meshRenderer;
-        characterObject.transform.position = new Vector3(-0.37f, -0.69f, 0.45f);
-        characterObject.transform.rotation = Quaternion.Euler(19.454f, 196.335f, 4.901f);
-        characterObject.transform.localScale = new Vector3(1.89441f, 1.498345f, 1f);
-    }
-
     private void DisplayUserModelGender(string gendermodel, int modelnumber)
     {
-        Debug.Log("Received gender: " + gendermodel + ", model number: " + modelnumber);
+        Debug.Log($"Received gender: {gendermodel}, model number: {modelnumber}");
         selectedOption = modelnumber;
         gender = gendermodel;
         isDataLoaded = true;
