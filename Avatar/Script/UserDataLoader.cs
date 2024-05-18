@@ -5,7 +5,7 @@ public class UserDataLoader : MonoBehaviour
 {
     public TMP_Text profileEmailText;
     public TMP_Text profileUsernameText;
-    public TMP_Text profileDistanceText;
+    public TMP_Text profileDiscoveriesText;
     public TMP_Text profileTaskText;
     public TMP_Text profileLandmarkText;
     public TMP_Text profileDateStartText;
@@ -25,12 +25,12 @@ public class UserDataLoader : MonoBehaviour
     }
 
     // Method to display user data
-    private void DisplayUserData(string email, string username, int distance, int task, int landmark, string datestart)
+    private void DisplayUserData(string email, string username, int discoveries, int task, int landmark, string datestart)
     {
         // Display the data in Unity UI
         profileEmailText.text = email;
         profileUsernameText.text = username;
-        profileDistanceText.text = distance.ToString() + " km";
+        profileDiscoveriesText.text = discoveries.ToString();
         profileTaskText.text = task.ToString();
         profileLandmarkText.text = landmark.ToString();
         profileDateStartText.text = datestart;

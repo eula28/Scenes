@@ -508,7 +508,7 @@ public class FirebaseController : MonoBehaviour
             { "bday", "" },
             { "gender", "" },
             { "model number", 0 },
-            { "distance walked", 0 },
+            { "discoveries", 0 },
             { "task achieved", 0},
             { "landmark visited", 0},
             { "date start", formattedDateTime}
@@ -584,13 +584,13 @@ public class FirebaseController : MonoBehaviour
             // Access the data from the document
             string email = doc.GetValue<string>("email");
             string username = doc.GetValue<string>("username");
-            int distance = doc.GetValue<int>("distance walked");
+            int discoveries = doc.GetValue<int>("discoveries");
             int task = doc.GetValue<int>("task achieved");
             int landmark = doc.GetValue<int>("landmark visited");
             string datestart = doc.GetValue<string>("date start");
 
             // Pass the data to the callback function
-            callback(email, username, distance, task, landmark, datestart);
+            callback(email, username, discoveries, task, landmark, datestart);
         }
         else
         {
