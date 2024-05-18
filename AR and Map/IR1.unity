@@ -389,7 +389,7 @@ MonoBehaviour:
   PreviewVisible: 1
   RuntimeOcclusion: 0
   RuntimeCollider: 0
-  mTrackableName: juanitoreyesremulla
+  mTrackableName: cvsuimus_juanitoreyesremulla_marker
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/Histourical_Adventure.xml
   mAspectRatio: 0.821149
@@ -432,7 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mObserverBehaviour: {fileID: 447444924}
   mHiddenRoot: {fileID: 0}
-  mTargetName: juanitoreyesremulla
+  mTargetName: cvsuimus_juanitoreyesremulla_marker
   mDatasetName: Vuforia/Histourical_Adventure.xml
   mCastedBehaviour: {fileID: 447444924}
   mMeshFilter: {fileID: 0}
@@ -466,7 +466,7 @@ Transform:
   m_GameObject: {fileID: 548152744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.06, y: -0, z: -0.95}
+  m_LocalPosition: {x: -1.655, y: -0, z: -0.896}
   m_LocalScale: {x: 0.06407545, y: 0.075280175, z: 0.0136020575}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 741180117}
   - component: {fileID: 741180116}
   m_Layer: 0
-  m_Name: cvsu imus text
+  m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1060,7 +1060,7 @@ GameObject:
   - component: {fileID: 760140153}
   - component: {fileID: 760140152}
   m_Layer: 0
-  m_Name: cvsu imus pic1
+  m_Name: Juanito Reyes Remulla Portrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1075,8 +1075,8 @@ Transform:
   m_GameObject: {fileID: 760140150}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.6381035, y: 0.01999998, z: 0.148}
-  m_LocalScale: {x: 0.15078539, y: 1.6779572, z: 0.06996272}
+  m_LocalPosition: {x: -1.647, y: 0.01999998, z: 0.146}
+  m_LocalScale: {x: 0.058474574, y: 1.6779572, z: 0.06394592}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1105022917}
@@ -1353,8 +1353,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1920268119}
   - {fileID: 756564295}
+  - {fileID: 1920268119}
   - {fileID: 760140151}
   - {fileID: 741180115}
   - {fileID: 548152745}
@@ -1538,7 +1538,7 @@ GameObject:
   - component: {fileID: 1920268121}
   - component: {fileID: 1920268120}
   m_Layer: 0
-  m_Name: Cvsu imus name
+  m_Name: Remulla Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1553,8 +1553,8 @@ Transform:
   m_GameObject: {fileID: 1920268118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.6451035, y: 0.01999998, z: 0.589}
-  m_LocalScale: {x: 0.11534151, y: 0.15437153, z: 0.015056773}
+  m_LocalPosition: {x: -1.6355, y: 0.01999998, z: 0.5953}
+  m_LocalScale: {x: 0.1172584, y: 0.15437153, z: 0.01379351}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1105022917}
