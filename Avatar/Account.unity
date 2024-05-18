@@ -2628,7 +2628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   profileEmailText: {fileID: 965932277}
   profileUsernameText: {fileID: 2052025507}
-  profileDistanceText: {fileID: 287850473}
+  profileDiscoveriesText: {fileID: 287850473}
   profileTaskText: {fileID: 1532430163}
   profileLandmarkText: {fileID: 1404943716}
   profileDateStartText: {fileID: 1194777424}
