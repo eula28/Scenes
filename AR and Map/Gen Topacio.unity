@@ -466,8 +466,8 @@ Transform:
   m_GameObject: {fileID: 548152744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.06, y: -0, z: -0.95}
-  m_LocalScale: {x: 0.06407545, y: 0.075280175, z: 0.0136020575}
+  m_LocalPosition: {x: -6.2424984, y: 0, z: -1.2851996}
+  m_LocalScale: {x: 0.18662974, y: 0.21926524, z: 0.039618112}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1380399910}
@@ -586,8 +586,8 @@ Transform:
   m_GameObject: {fileID: 726978290}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -0.005, y: 0.01, z: 1.866}
-  m_LocalScale: {x: 0.09405101, y: 0.24750498, z: 0.017776148}
+  m_LocalPosition: {x: -0.19, y: 0.01, z: 6.7269}
+  m_LocalScale: {x: 0.7920434, y: 1.5773758, z: 0.09352672}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 447444925}
@@ -634,7 +634,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1b38c3000a0bbbc4f83a333828b8780d, type: 2}
+  - {fileID: 2100000, guid: 32b79be70baf7304886ef8ff9d030cad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 741180117}
   - component: {fileID: 741180116}
   m_Layer: 0
-  m_Name: cvsu imus text
+  m_Name: Details Gen Topacio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,9 +692,9 @@ Transform:
   m_GameObject: {fileID: 741180114}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.6430016, y: 0.01999998, z: -0.442}
-  m_LocalScale: {x: 0.20825417, y: 0.16348507, z: 0.04342986}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -6.2125006, y: 0.032811, z: 0.20743023}
+  m_LocalScale: {x: 0.7418499, y: 0.5823719, z: 0.15470728}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1105022917}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -740,7 +740,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e0293a8fd6cc686449e959052ed66108, type: 2}
+  - {fileID: 2100000, guid: 5baec1fd8dfbdad46b01ecf35efb293d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -969,8 +969,8 @@ Transform:
   m_GameObject: {fileID: 756564294}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.6458015, y: 0.00999999, z: -0.002}
-  m_LocalScale: {x: 0.22877614, y: 0.21702334, z: 0.14925852}
+  m_LocalPosition: {x: -6.2224984, y: -0.0028108, z: 1.7748004}
+  m_LocalScale: {x: 0.81495386, y: 0.77308774, z: 0.53169364}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1105022917}
@@ -1075,9 +1075,9 @@ Transform:
   m_GameObject: {fileID: 760140150}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.632, y: 0.01999998, z: 0.148}
-  m_LocalScale: {x: 0.07409594, y: 1.6779572, z: 0.06996272}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -6.241001, y: 0.032811, z: 2.2913003}
+  m_LocalScale: {x: 0.1866685, y: 5.9772744, z: 0.23245077}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1105022917}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -1538,7 +1538,7 @@ GameObject:
   - component: {fileID: 1920268121}
   - component: {fileID: 1920268120}
   m_Layer: 0
-  m_Name: Cvsu imus name
+  m_Name: Title Gen Topacio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1553,9 +1553,9 @@ Transform:
   m_GameObject: {fileID: 1920268118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.6451035, y: 0.01999998, z: 0.589}
-  m_LocalScale: {x: 0.11534151, y: 0.15437153, z: 0.015056773}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -6.22, y: 0.032811, z: 3.88}
+  m_LocalScale: {x: 0.41087332, y: 0.5499074, z: 0.053635735}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1105022917}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -1601,7 +1601,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4e79741082e7ff540b1b76a558cd4492, type: 2}
+  - {fileID: 2100000, guid: 32b79be70baf7304886ef8ff9d030cad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
