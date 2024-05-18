@@ -1,38 +1,45 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Firebase.Firestore;
+using Firebase.Extensions;
 
 public class Player : MonoBehaviour
 {
     public CharacterDatabase characterDB;
     public MeshRenderer art3d;
-    public static int pick;
-    private int selectedOption = 0;
+    private int selectedOption;
+    private string gender;
+    private bool isDataLoaded = false;
 
     void Start()
     {
-        if (!PlayerPrefs.HasKey("selectedOption"))
+        if (FirebaseController.Instance != null)
         {
-            selectedOption = 0;
+            Debug.Log("Fetching user model gender from Firebase...");
+            FirebaseController.Instance.GetUserModelGender(FirebaseController.Instance.user.UserId, DisplayUserModelGender);
+
         }
         else
         {
+            Debug.LogError("FirebaseController instance not found.");
+        }
+       StartCoroutine(InitializeCharacter());
+        
 
-            Load();
-        }
-        int p = StyleBtn.p;
-        Debug.Log(p);
-        if (p == 1)
+    }
+    
+       
+       
+    
+    private IEnumerator InitializeCharacter()
+    {
+        foreach (Transform child in transform)
         {
-            Destroy(art3d.gameObject);
-            UpdateCharacter(selectedOption);
+            Destroy(child.gameObject);
         }
-        else
-        {
-            Destroy(art3d.gameObject);
-            Starter(selectedOption);
-        }
-
+        yield return new WaitUntil(() => isDataLoaded);
+        Debug.Log("Data loaded from Firebase.");
+        UpdateCharacter(selectedOption);
     }
 
     private void UpdateCharacter(int selectedOption)
@@ -42,53 +49,27 @@ public class Player : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-
         Character character = characterDB.GetCharacter(selectedOption);
+        if (character == null)
+        {
+            Debug.LogError("Character not found for selectedOption: " + selectedOption);
+            return;
+        }
+
         GameObject characterObject = Instantiate(character.characters3D);
         MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
         art3d.material = meshRenderer.sharedMaterial;
         art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
-        characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
-        characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
-
+        characterObject.transform.position = new Vector3(-0.37f, -0.69f, 0.45f);
+        characterObject.transform.rotation = Quaternion.Euler(19.454f, 196.335f, 4.901f);
+        characterObject.transform.localScale = new Vector3(1.89441f, 1.498345f, 1f);
     }
 
-    private void Load()
+    private void DisplayUserModelGender(string gendermodel, int modelnumber)
     {
-        selectedOption = PlayerPrefs.GetInt("selectedOption");
+        Debug.Log($"Received gender: {gendermodel}, model number: {modelnumber}");
+        selectedOption = modelnumber;
+        gender = gendermodel;
+        isDataLoaded = true;
     }
-    
-    private void Starter(int selectedOption)
-    {
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        string gender = AvatarGender.val;
-
-        if (gender == "Male-Avatar")
-        {
-            Debug.LogWarning(gender);
-            selectedOption = 0;
-        }
-        else
-        {
-            Debug.LogWarning(gender);
-            selectedOption = 5;
-        }
-
-        Character character = characterDB.GetCharacter(selectedOption);
-        GameObject characterObject = Instantiate(character.characters3D);
-        MeshRenderer meshRenderer = characterObject.GetComponent<MeshRenderer>();
-        art3d.material = meshRenderer.sharedMaterial;
-        art3d = meshRenderer;
-        characterObject.transform.position = new Vector3((float)-0.37, (float)-0.69, (float)0.4499969);
-        characterObject.transform.rotation = characterObject.transform.localRotation = Quaternion.Euler((float)19.454, (float)196.335, (float)4.901);
-        characterObject.transform.localScale = new Vector3((float)1.89441, (float)1.498345, (float)1);
-    }
-
-
 }
-

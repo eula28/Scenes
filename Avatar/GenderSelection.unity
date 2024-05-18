@@ -1559,6 +1559,7 @@ MonoBehaviour:
   genderValue: 
   gen: 
   bday: 
+  modelnum: 0
   maleButton: {fileID: 1550687193}
   femaleButton: {fileID: 2078291071}
 --- !u!4 &522025426
@@ -4666,7 +4667,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1601115275
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4731,14 +4732,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 502405845}
-        m_TargetAssemblyTypeName: ToAccount, Assembly-CSharp
-        m_MethodName: OnMouseUpAsButton
+      - m_Target: {fileID: 522025425}
+        m_TargetAssemblyTypeName: AvatarGender, Assembly-CSharp
+        m_MethodName: updateUserDoc
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

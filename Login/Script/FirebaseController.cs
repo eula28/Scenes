@@ -487,7 +487,7 @@ public class FirebaseController : MonoBehaviour
                     else
                     {
                         CreateFirestoreDocument(user.UserId, user.Email, user.DisplayName, "Google Sign-In");
-                        OpenProfilePanel();
+                        SceneManager.LoadScene("GenderSelection");
                     }
                 }
             });
@@ -504,14 +504,14 @@ public class FirebaseController : MonoBehaviour
             { "email", email },
             { "username", username },
             { "user type", type },
-            { "model", 0 },
+            { "gender model", "" },
             { "bday", "" },
             { "gender", "" },
+            { "model number", 0 },
             { "distance walked", 0 },
             { "task achieved", 0},
             { "landmark visited", 0},
             { "date start", formattedDateTime}
-            // Add more user data if needed
         };
 
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
@@ -591,6 +591,27 @@ public class FirebaseController : MonoBehaviour
 
             // Pass the data to the callback function
             callback(email, username, distance, task, landmark, datestart);
+        }
+        else
+        {
+            Debug.Log("Document does not exist for user: " + userId);
+        }
+    }
+
+    public async void GetUserModelGender(string userId, Action<string, int> callback)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        DocumentReference userDocRef = db.Collection("users").Document(userId);
+
+        DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
+        if (doc.Exists)
+        {
+            // Access the data from the document
+            string gendermodel = doc.GetValue<string>("gender model");
+            int modelnumber = doc.GetValue<int>("model number");
+
+            // Pass the data to the callback function
+            callback(gendermodel, modelnumber);
         }
         else
         {
