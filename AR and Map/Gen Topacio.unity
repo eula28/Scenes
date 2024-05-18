@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 447444923}
   - component: {fileID: 447444926}
   m_Layer: 0
-  m_Name: Juanito Reyes Remulla (Image Target)
+  m_Name: Gen Topacio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,13 +389,13 @@ MonoBehaviour:
   PreviewVisible: 1
   RuntimeOcclusion: 0
   RuntimeCollider: 0
-  mTrackableName: juanitoreyesremulla
+  mTrackableName: gentopacio_front
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/Histourical_Adventure.xml
-  mAspectRatio: 0.821149
+  mAspectRatio: 1.633929
   mImageTargetType: 0
   mWidth: 1
-  mHeight: 0.821149
+  mHeight: 1.633929
   mRuntimeTexture: {fileID: 0}
   mMotionHint: 1
   mTrackingOptimization: 0
@@ -432,7 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mObserverBehaviour: {fileID: 447444924}
   mHiddenRoot: {fileID: 0}
-  mTargetName: juanitoreyesremulla
+  mTargetName: gentopacio_front
   mDatasetName: Vuforia/Histourical_Adventure.xml
   mCastedBehaviour: {fileID: 447444924}
   mMeshFilter: {fileID: 0}
@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toFeedback: Feedback
+  Feedback: 
 --- !u!1 &726978290
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,7 +1060,7 @@ GameObject:
   - component: {fileID: 760140153}
   - component: {fileID: 760140152}
   m_Layer: 0
-  m_Name: cvsu imus pic1
+  m_Name: Picture Gen Topacio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1075,8 +1075,8 @@ Transform:
   m_GameObject: {fileID: 760140150}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.6381035, y: 0.01999998, z: 0.148}
-  m_LocalScale: {x: 0.15078539, y: 1.6779572, z: 0.06996272}
+  m_LocalPosition: {x: -1.632, y: 0.01999998, z: 0.148}
+  m_LocalScale: {x: 0.07409594, y: 1.6779572, z: 0.06996272}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1105022917}
@@ -1123,7 +1123,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6b299658884ad6a4aacec27d8134ff93, type: 2}
+  - {fileID: 2100000, guid: 97e7d389808f7144da03f1d17e7166b4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
