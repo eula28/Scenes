@@ -476,16 +476,19 @@ public class FirebaseController : MonoBehaviour
                     Debug.LogError("SignInWithCredentialAsync encountered an error: " + signInTask.Exception);
                     return;
                 }
-                else
+
+                user = auth.CurrentUser;
+                if (user != null)
                 {
-                    user = auth.CurrentUser;
-                    bool documentExists = await CheckFirestoreDocumentID(signInUser.UserId);
+                    bool documentExists = await CheckFirestoreDocumentID(user.UserId);
                     if (documentExists)
                     {
+                        Debug.Log("User document exists. Opening profile panel.");
                         OpenProfilePanel();
                     }
                     else
                     {
+                        Debug.Log("User document does not exist. Creating Firestore document and navigating to Gender Selection.");
                         CreateFirestoreDocument(user.UserId, user.Email, user.DisplayName, "Google Sign-In");
                         SceneManager.LoadScene("GenderSelection");
                     }
@@ -536,7 +539,7 @@ public class FirebaseController : MonoBehaviour
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userDocRef = db.Collection("users").Document(userId);
         DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
-
+        Debug.Log("Checking Firestore document for user ID: " + userId);
         return doc.Exists;
     }
 

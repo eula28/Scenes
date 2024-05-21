@@ -20,7 +20,6 @@ public class FirestoreFriends : MonoBehaviour
     private void Start()
     {
         InitializeUser();
-        OpenFriendPanel();
     }
 
     void InitializeUser()
@@ -34,6 +33,10 @@ public class FirestoreFriends : MonoBehaviour
                 if (string.IsNullOrEmpty(username))
                 {
                     Debug.LogError("Failed to get username.");
+                }
+                else
+                {
+                    OpenFriendPanel();
                 }
             });
         }
@@ -230,14 +233,18 @@ public class FirestoreFriends : MonoBehaviour
         {
             try
             {
-                DocumentSnapshot userDocument = await db.Collection("users").Document(friendUsername).GetSnapshotAsync();
-                if (!userDocument.Exists)
+                var querySnapshot = await db.Collection("users")
+                    .WhereEqualTo("username", friendUsername)
+                    .GetSnapshotAsync();
+
+                if (!querySnapshot.Documents.Any())
                 {
                     Debug.LogError("User document not found for username: " + friendUsername);
                     return;
                 }
 
-                string modelNumber = userDocument.GetValue<string>("model number");
+                DocumentSnapshot userDocument = querySnapshot.Documents.FirstOrDefault();
+                int modelNumber = userDocument.GetValue<int>("model number");
                 int points = userDocument.GetValue<int>("points");
 
                 GameObject friendItem = null;
@@ -285,18 +292,18 @@ public class FirestoreFriends : MonoBehaviour
                     if (prefabType == "friend" && textFields.Length >= 2)
                     {
                         textFields[0].text = friendUsername;
-                        textFields[2].text = points.ToString();
-                        // add profile picture using modelnumber
+                        textFields[1].text = points.ToString();
+                        // add profile picture using modelNumber
                     }
                     else if (prefabType == "request" && textFields.Length >= 1)
                     {
                         textFields[0].text = friendUsername;
-                        // add profile picture using modelnumber
+                        // add profile picture using modelNumber
                     }
                     else if (prefabType == "search" && textFields.Length >= 1)
                     {
                         textFields[0].text = friendUsername;
-                        // add profile picture using modelnumber
+                        // add profile picture using modelNumber
                     }
                     else
                     {
@@ -312,6 +319,8 @@ public class FirestoreFriends : MonoBehaviour
             }
         });
     }
+
+
 
 
     void ClearUIList(Transform parent)
