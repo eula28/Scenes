@@ -20,6 +20,7 @@ public class FirestoreFriends : MonoBehaviour
     private void Start()
     {
         InitializeUser();
+        OpenFriendPanel();
     }
 
     void InitializeUser()
