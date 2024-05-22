@@ -5,5 +5,17 @@ using UnityEngine;
 [CreateAssetMenu]
 public class ProfileDatabase : ScriptableObject
 {
-    public List<Achievements> achievements;
+    public Profile[] profile;
+
+    public int profileCount
+    {
+        get
+        {
+            return profile.Length;
+        }
+    }
+    public Profile GetCharacter(int index)
+    {
+        return profile[index];
+    }
 }
