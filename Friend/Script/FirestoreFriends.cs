@@ -12,6 +12,7 @@ public class FirestoreFriends : MonoBehaviour
 {
     public Transform friendsListParent, friendRequestsListParent, searchFriendListParent;
     public GameObject friendPrefab, requestPrefab, searchPrefab, friendPanel, invitesPanel, searchPanel;
+    public TextMeshProUGUI friendCountText, requestCountText;
 
     string userId;
     string username;
@@ -183,49 +184,68 @@ public class FirestoreFriends : MonoBehaviour
 
     public void DisplayFriends()
     {
-        PerformFirestoreOperation((db, currentUsername) =>
+        PerformFirestoreOperation(async (db, currentUsername) =>
         {
-            db.Collection("friendRelationships").WhereEqualTo("user1", currentUsername).WhereEqualTo("status", "friends").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            try
             {
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("Error getting friends: " + task.Exception);
-                    return;
-                }
+                var snapshot = await db.Collection("friendRelationships")
+                    .WhereEqualTo("user1", currentUsername)
+                    .WhereEqualTo("status", "friends")
+                    .GetSnapshotAsync();
 
-                ClearUIList(friendsListParent); // Clear previous entries
+                // Convert documents to a list and count them
+                List<DocumentSnapshot> documents = snapshot.Documents.ToList();
+                int friendCount = documents.Count;
+                friendCountText.text = "Friends (" + friendCount.ToString() + ")";
 
-                foreach (DocumentSnapshot document in task.Result.Documents)
+                // Clear previous entries
+                ClearUIList(friendsListParent);
+
+                foreach (DocumentSnapshot document in documents)
                 {
                     string friendUsername = document.GetValue<string>("user2");
                     AddFriendToUI(friendsListParent, friendUsername, "friend");
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error getting friends: " + ex);
+            }
         });
     }
 
     public void DisplayFriendRequests()
     {
-        PerformFirestoreOperation((db, currentUsername) =>
+        PerformFirestoreOperation(async (db, currentUsername) =>
         {
-            db.Collection("friendRequests").WhereEqualTo("receiver", currentUsername).WhereEqualTo("status", "pending").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            try
             {
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("Error getting friend requests: " + task.Exception);
-                    return;
-                }
+                var snapshot = await db.Collection("friendRequests")
+                    .WhereEqualTo("receiver", currentUsername)
+                    .WhereEqualTo("status", "pending")
+                    .GetSnapshotAsync();
 
-                ClearUIList(friendRequestsListParent); // Clear previous entries
+                // Convert documents to a list and count them
+                List<DocumentSnapshot> documents = snapshot.Documents.ToList();
+                int requestCount = documents.Count;
+                requestCountText.text = "Invites (" + requestCount.ToString() + ")";
 
-                foreach (DocumentSnapshot document in task.Result.Documents)
+                // Clear previous entries
+                ClearUIList(friendRequestsListParent);
+
+                foreach (DocumentSnapshot document in documents)
                 {
                     string requesterUsername = document.GetValue<string>("requester");
                     AddFriendToUI(friendRequestsListParent, requesterUsername, "request");
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error getting friend requests: " + ex);
+            }
         });
     }
+
 
     void AddFriendToUI(Transform parent, string friendUsername, string prefabType)
     {
