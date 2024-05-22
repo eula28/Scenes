@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using Firebase;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Google;

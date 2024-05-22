@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Firebase.Firestore;
-using Firebase.Extensions;
 
 public class Player : MonoBehaviour
 {
