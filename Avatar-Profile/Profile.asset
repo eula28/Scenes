@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa04d5a2fcb6f9c4697c7068a6e25bcb, type: 3}
+  m_Name: Profile
+  m_EditorClassIdentifier: 
+  profile:
+  - profileName: Male1
+    profileSprite: {fileID: 21300000, guid: 9dd62e43b51074647bb8d976bb6bacbd, type: 3}
+  - profileName: Male2
+    profileSprite: {fileID: 21300000, guid: 33c98cbcc3aa83d4abd5e19ae75038ad, type: 3}
+  - profileName: Male3
+    profileSprite: {fileID: 21300000, guid: 221dda0130ea4a94fb5720d3ea94cdc4, type: 3}
+  - profileName: Male4
+    profileSprite: {fileID: 21300000, guid: 84637cecea7cb2e42b9ad672b8a14332, type: 3}
+  - profileName: Male5
+    profileSprite: {fileID: 21300000, guid: 5080dbcdf6b61b740a3def6fed7ec778, type: 3}
+  - profileName: Female1
+    profileSprite: {fileID: 21300000, guid: 2f15c3450e29f584992d033dbfde310c, type: 3}
+  - profileName: Female2
+    profileSprite: {fileID: 21300000, guid: 11fea4cffd72d8341a42aed8f50d82fd, type: 3}
+  - profileName: Female3
+    profileSprite: {fileID: 21300000, guid: d190588c0b3cef04b899202f357b1608, type: 3}
+  - profileName: Female4
+    profileSprite: {fileID: 21300000, guid: 780e17e6e67881b40936ae22a32b8cf4, type: 3}
+  - profileName: Female5
+    profileSprite: {fileID: 21300000, guid: 52ad5c59a338e03459a82597a9c32403, type: 3}
