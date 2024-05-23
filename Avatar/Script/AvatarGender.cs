@@ -6,8 +6,14 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using UnityEngine.SceneManagement;
 
+
+
 public class AvatarGender : MonoBehaviour
 {
+    private ColorBlock colors;
+    private ColorBlock maleDefaultColors;
+    private ColorBlock femaleDefaultColors;
+    private Button currentlySelectedButton;
 
     public TextMeshProUGUI Month;
     public TextMeshProUGUI Date;
@@ -37,6 +43,13 @@ public class AvatarGender : MonoBehaviour
         femaleButton.onClick.AddListener(FemaleButton);
         next.onClick.AddListener(TaskOnClick);
 
+        // Store default colors
+        maleDefaultColors = maleButton.colors;
+        femaleDefaultColors = femaleButton.colors;
+
+        // Ensure no button is selected initially
+        currentlySelectedButton = null;
+
 
     }
     void Update()
@@ -45,6 +58,13 @@ public class AvatarGender : MonoBehaviour
         bday = Month.text +"/"+ Date.text +"/"+ Year.text;
        
         checkValue();
+
+        if (currentlySelectedButton != null)
+        {
+            ColorBlock colors = currentlySelectedButton.colors;
+            colors.normalColor = colors.selectedColor; // Ensuring the selected color remains as normal color
+            currentlySelectedButton.colors = colors;
+        }
     }
     void checkValue()
     {
@@ -62,6 +82,7 @@ public class AvatarGender : MonoBehaviour
     // Define the MaleButton() method
     public void MaleButton()
     {
+        SetSelectedButton(maleButton);
         genderValue = "Male-Avatar";
         val = genderValue;
         modelnum = 0;
@@ -70,10 +91,36 @@ public class AvatarGender : MonoBehaviour
     // Define the FemaleButton() method
     public void FemaleButton()
     {
+        SetSelectedButton(femaleButton);
         genderValue = "Female-Avatar";
         val = genderValue;
         modelnum = 5;
     }
+
+    private void SetSelectedButton(Button selectedButton)
+    {
+        // If there is a currently selected button, revert it to default colors
+        if (currentlySelectedButton != null)
+        {
+            if (currentlySelectedButton == maleButton)
+            {
+                maleButton.colors = maleDefaultColors;
+            }
+            else if (currentlySelectedButton == femaleButton)
+            {
+                femaleButton.colors = femaleDefaultColors;
+            }
+        }
+
+        // Set the new selected button's color
+        ColorBlock colors = selectedButton.colors;
+        colors.selectedColor = Color.white;
+        selectedButton.colors = colors;
+
+        // Update the currently selected button reference
+        currentlySelectedButton = selectedButton;
+    }
+
     public void TaskOnClick()
     {
         nbtn = 0;
