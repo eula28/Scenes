@@ -23,13 +23,13 @@ public class FirebaseController : MonoBehaviour
     }
 
     // UI Panels
-    public GameObject welcomePanel, loginPanel, signupPanel, profilePanel, forgetpassPanel, alertPanel;
+    public GameObject welcomePanel, loginPanel, signupPanel, forgetpassPanel, alertPanel;
 
     // Input Fields
     public TMP_InputField loginEmail, loginPassword, signupUsername, signupEmail, signupPassword, signupConfirmPass, forgetpassEmail;
 
     // Text Components
-    public TMP_Text alertText, profileUsernameText, profileEmailText;
+    public TMP_Text alertText;
 
     // Google Sign-In Configuration
     public string GoogleWebAPI = "84969780262-k6bambkpmoebont0uqmht2sopngoeieh.apps.googleusercontent.com";
@@ -319,6 +319,7 @@ public class FirebaseController : MonoBehaviour
                 Debug.LogFormat("Firebase user created successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
                 // Create a Firestore document for the user
                 CreateFirestoreDocument(result.User.UserId, email, username, "Email and Password");
+                CreateFirestoreDocumentDup(result.User.UserId, username, "Email and Password");
                 // Open profile panel after successful creation
                 SceneManager.LoadScene("GenderSelection");
             }
@@ -487,11 +488,37 @@ public class FirebaseController : MonoBehaviour
                     {
                         Debug.Log("User document does not exist. Creating Firestore document and navigating to Gender Selection.");
                         CreateFirestoreDocument(user.UserId, user.Email, user.DisplayName, "Google Sign-In");
+                        CreateFirestoreDocumentDup(user.UserId, user.DisplayName, "Google Sign-In");
                         SceneManager.LoadScene("GenderSelection");
                     }
                 }
             });
         }
+    }
+
+    void CreateFirestoreDocumentDup(string userId, string username, string type)
+    {
+        System.DateTime currentDateTime = System.DateTime.Now;
+        string formattedDateTime = currentDateTime.ToString("MM/dd/yyyy");
+        Dictionary<string, object> userDocData = new Dictionary<string, object>
+        {
+            { "username", username },
+            { "user type", type },
+        };
+
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        DocumentReference userDocRef = db.Collection("usersPub").Document(userId);
+
+        userDocRef.SetAsync(userDocData).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Failed to create Firestore document: " + task.Exception);
+                return;
+            }
+
+            Debug.Log("Firestore document created successfully for user: " + userId);
+            });
     }
 
     // Create Firestore Document for User
@@ -527,14 +554,56 @@ public class FirebaseController : MonoBehaviour
             }
 
             Debug.Log("Firestore document created successfully for user: " + userId);
+           //make subcollection for user achievements
+           AddMultipleUserAchievements(userId, new List<(string, bool, int, int)>
+            {
+                ("Setup", true, 1, 200),
+                ("5Friends", false, 0, 100),
+                ("10Friends", false, 0, 125),
+                ("15Friends",false,0, 150),
+                ("5AR", false, 0, 100),
+                ("10AR", false, 0, 125),
+                ("15AR",false, 0, 150)
+            });
         });
     }
+
+    public void AddMultipleUserAchievements(string userId, List<(string achievementId, bool achieved, int progress, int points)> achievements)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        WriteBatch batch = db.StartBatch();
+
+        foreach (var achievement in achievements)
+        {
+            Dictionary<string, object> userAchievementData = new Dictionary<string, object>
+            {
+                { "achieved", achievement.achieved },
+                { "progress", achievement.progress },
+                { "points", achievement.points}
+            };
+
+            DocumentReference userAchievementDocRef = db.Collection("users").Document(userId).Collection("userAchievements").Document(achievement.achievementId);
+            batch.Set(userAchievementDocRef, userAchievementData);
+        }
+
+        batch.CommitAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Failed to create user achievement documents: " + task.Exception);
+                return;
+            }
+
+            Debug.Log("User achievement documents created successfully for user: " + userId);
+        });
+    }
+
 
     // Check if Firestore Document exists based on User ID
     async Task<bool> CheckFirestoreDocumentID(string userId)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-        DocumentReference userDocRef = db.Collection("users").Document(userId);
+        DocumentReference userDocRef = db.Collection("usersPub").Document(userId);
         DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
         Debug.Log("Checking Firestore document for user ID: " + userId);
         return doc.Exists;
@@ -545,7 +614,7 @@ public class FirebaseController : MonoBehaviour
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
 
-        CollectionReference usersRef = db.Collection("users");
+        CollectionReference usersRef = db.Collection("usersPub");
 
         // Retrieve all documents in the users collection
         QuerySnapshot usersQuery = await usersRef.GetSnapshotAsync();
