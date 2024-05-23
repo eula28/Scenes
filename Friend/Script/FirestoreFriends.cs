@@ -308,7 +308,7 @@ public class FirestoreFriends : MonoBehaviour
                     RectTransform rectTransform = friendItem.GetComponent<RectTransform>();
                     rectTransform.sizeDelta = new Vector2(200, 50); // Set to desired size
                     TMP_Text[] textFields = friendItem.GetComponentsInChildren<TMP_Text>();
-
+                    Image[] profileImageComponents = friendItem.GetComponentsInChildren<Image>();
                     // Handle different prefab types with different numbers of TMP_Text components
                     if (prefabType == "friend" && textFields.Length >= 2)
                     {
@@ -320,24 +320,66 @@ public class FirestoreFriends : MonoBehaviour
                         if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
                         {
                             Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
-                            Image profileImageComponent = friendItem.GetComponent<Image>();
+                           
 
-                            if (profileImageComponent != null)
+                            if (profileImageComponents != null && profileImageComponents.Length > 0)
                             {
-                                profileImageComponent.sprite = profileSprite;
+                                // Assuming we want the first Image component found
+                                Image profileImageComponent = profileImageComponents[2];
+
+                                if (profileImageComponent != null)
+                                {
+                                    profileImageComponent.sprite = profileSprite;
+                                }
                             }
                         }
+
 
                     }
                     else if (prefabType == "request" && textFields.Length >= 1)
                     {
                         textFields[0].text = friendUsername;
                         // add profile picture using modelNumber
+
+                        // Add profile picture using modelNumber
+                        if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
+                        {
+                            Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
+
+
+                            if (profileImageComponents != null && profileImageComponents.Length > 0)
+                            {
+                                // Assuming we want the first Image component found
+                                Image profileImageComponent = profileImageComponents[2];
+
+                                if (profileImageComponent != null)
+                                {
+                                    profileImageComponent.sprite = profileSprite;
+                                }
+                            }
+                        }
                     }
                     else if (prefabType == "search" && textFields.Length >= 1)
                     {
                         textFields[0].text = friendUsername;
                         // add profile picture using modelNumber
+                        // Add profile picture using modelNumber
+                        if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
+                        {
+                            Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
+
+
+                            if (profileImageComponents != null && profileImageComponents.Length > 0)
+                            {
+                                // Assuming we want the first Image component found
+                                Image profileImageComponent = profileImageComponents[2];
+
+                                if (profileImageComponent != null)
+                                {
+                                    profileImageComponent.sprite = profileSprite;
+                                }
+                            }
+                        }
                     }
                     else
                     {
