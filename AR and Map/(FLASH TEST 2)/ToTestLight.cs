@@ -1,14 +1,14 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class ButtontoFlashTestScreen : MonoBehaviour
+public class ToTestLight : MonoBehaviour
 {
     // The name of the scene you want to load
-    public string IRTestFlashlight;
+    public string toTestlight;
 
     public void OnMouseUpAsButton()
     {
         // Load the specified scene
-        SceneManager.LoadScene(IRTestFlashlight);
+        SceneManager.LoadScene(toTestlight);
     }
 }
