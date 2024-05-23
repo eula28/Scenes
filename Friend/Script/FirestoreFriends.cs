@@ -17,6 +17,7 @@ public class FirestoreFriends : MonoBehaviour
     string userId;
     string username;
     public TMP_InputField searchReceiverUsername;
+ 
 
     private void Start()
     {
@@ -319,10 +320,14 @@ public class FirestoreFriends : MonoBehaviour
                         if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
                         {
                             Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
-                            Image profileImageComponent = friendItem.GetComponentInChildren<Image>();
+                            Image profileImageComponent = friendItem.GetComponent<Image>();
+
                             if (profileImageComponent != null)
+                            {
                                 profileImageComponent.sprite = profileSprite;
+                            }
                         }
+
                     }
                     else if (prefabType == "request" && textFields.Length >= 1)
                     {
