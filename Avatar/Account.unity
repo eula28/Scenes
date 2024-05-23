@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1321872, g: 0.14128868, b: 0.1313247, a: 1}
+  m_IndirectSpecularColor: {r: 0.1321876, g: 0.1412888, b: 0.13132481, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 376953625}
   - component: {fileID: 376953624}
   m_Layer: 5
-  m_Name: To Map Button
+  m_Name: To AR Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -676,7 +676,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1277705510}
-        m_TargetAssemblyTypeName: ButtontoMap, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtontoIR, Assembly-CSharp
         m_MethodName: OnMouseUpAsButton
         m_Mode: 1
         m_Arguments:
@@ -2658,7 +2658,7 @@ GameObject:
   - component: {fileID: 1277705509}
   - component: {fileID: 1277705510}
   m_Layer: 5
-  m_Name: To Map Script
+  m_Name: To AR Script
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2692,10 +2692,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1277705508}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a5eaa0ab5bb5cc44985eb38ee9b39ee, type: 3}
+  m_Script: {fileID: 11500000, guid: d4f478c475da16248a8d345c2b539b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Map: Map
+  IR1: IR1
 --- !u!1 &1400203191
 GameObject:
   m_ObjectHideFlags: 0
