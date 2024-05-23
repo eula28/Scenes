@@ -3916,6 +3916,7 @@ MonoBehaviour:
   searchPanel: {fileID: 826208811}
   friendCountText: {fileID: 411492514}
   requestCountText: {fileID: 1518285266}
+  profileDB: {fileID: 11400000, guid: 4ba8da608b2288a44853d4d79004eb21, type: 2}
   searchReceiverUsername: {fileID: 1053349139}
 --- !u!4 &2128143723
 Transform:

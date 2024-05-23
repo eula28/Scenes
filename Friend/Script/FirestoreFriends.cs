@@ -13,7 +13,7 @@ public class FirestoreFriends : MonoBehaviour
     public Transform friendsListParent, friendRequestsListParent, searchFriendListParent;
     public GameObject friendPrefab, requestPrefab, searchPrefab, friendPanel, invitesPanel, searchPanel;
     public TextMeshProUGUI friendCountText, requestCountText;
-
+    public ProfileDatabase profileDB;
     string userId;
     string username;
     public TMP_InputField searchReceiverUsername;
@@ -314,6 +314,15 @@ public class FirestoreFriends : MonoBehaviour
                         textFields[0].text = friendUsername;
                         textFields[1].text = points.ToString();
                         // add profile picture using modelNumber
+
+                        // Add profile picture using modelNumber
+                        if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
+                        {
+                            Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
+                            Image profileImageComponent = friendItem.GetComponentInChildren<Image>();
+                            if (profileImageComponent != null)
+                                profileImageComponent.sprite = profileSprite;
+                        }
                     }
                     else if (prefabType == "request" && textFields.Length >= 1)
                     {
