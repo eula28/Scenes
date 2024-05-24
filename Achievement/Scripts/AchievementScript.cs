@@ -1,7 +1,7 @@
-using Firebase.Extensions;
 using Firebase.Firestore;
 using System.Collections.Generic;
 using UnityEngine;
+using Firebase.Extensions;
 
 public class AchievementScript : MonoBehaviour
 {
@@ -38,19 +38,19 @@ public class AchievementScript : MonoBehaviour
                     {
                         if (achievementTask.Result.Exists)
                         {
-                            Achievement achievement = achievementTask.Result.ConvertTo<Achievement>();
+                            Dictionary<string, object> achievementData = achievementTask.Result.ToDictionary();
 
                             // Check if achievement criteria are met
-                            if (achievement.Criteria != null && actionCount >= achievement.Criteria.Count)
+                            if (achievementData.ContainsKey("Criteria") && actionCount >= ((List<object>)achievementData["Criteria"]).Count)
                             {
-                                Dictionary<string, object> achievementData = new Dictionary<string, object>
+                                Dictionary<string, object> updateData = new Dictionary<string, object>
                                 {
                                     { "achieved", true },
                                     { "progress", actionCount }
                                 };
 
                                 // Update or create achievement document
-                                achievementDocRef.SetAsync(achievementData, SetOptions.MergeAll);
+                                achievementDocRef.SetAsync(updateData, SetOptions.MergeAll);
                             }
                         }
                     });

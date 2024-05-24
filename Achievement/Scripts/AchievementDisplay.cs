@@ -1,21 +1,31 @@
-using Firebase.Extensions;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using Firebase.Firestore;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
+using Firebase.Extensions;
 using System.Linq;
-using System.Threading.Tasks;
 
 public class AchievementDisplay : MonoBehaviour
 {
-    FirebaseFirestore db;
+    public Transform achievementsContainer;
+    public GameObject achievementPanelPrefab;
+    public TextMeshProUGUI userPointsText;
+
+    string userId;
 
     void Start()
     {
-        // Check if the FirebaseController instance exists
+        InitializeUser();
+    }
+
+    void InitializeUser()
+    {
         if (FirebaseController.Instance != null)
         {
-            db = FirebaseFirestore.DefaultInstance;
-            DisplayUserAchievements(FirebaseController.Instance.user.UserId);
+            userId = FirebaseController.Instance.user.UserId;
+            DisplayUserAchievements(userId);
         }
         else
         {
@@ -23,8 +33,9 @@ public class AchievementDisplay : MonoBehaviour
         }
     }
 
-    public void DisplayUserAchievements(string userId)
+    void DisplayUserAchievements(string userId)
     {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userRef = db.Collection("users").Document(userId);
 
         userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -42,59 +53,93 @@ public class AchievementDisplay : MonoBehaviour
                 return;
             }
 
-            // Fetch user points
             int userPoints = userSnapshot.GetValue<int>("points");
-            Debug.Log($"User Points: {userPoints}");
+            UpdateUserPointsUI(userPoints);
 
-            // Fetch user achievements
-            CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
-            userAchievementsRef.GetSnapshotAsync().ContinueWithOnMainThread(userAchievementsTask =>
-            {
-                if (userAchievementsTask.IsFaulted)
-                {
-                    Debug.LogError("Failed to fetch user achievements: " + userAchievementsTask.Exception);
-                    return;
-                }
-
-                List<DocumentSnapshot> userAchievementsSnapshots = userAchievementsTask.Result.Documents.ToList();
-                foreach (var userAchievementSnapshot in userAchievementsSnapshots)
-                {
-                    UserAchievement userAchievement = userAchievementSnapshot.ConvertTo<UserAchievement>();
-                    string achievementId = userAchievementSnapshot.Id;
-
-                    // Fetch the corresponding achievement details
-                    DocumentReference achievementRef = db.Collection("achievements").Document(achievementId);
-                    achievementRef.GetSnapshotAsync().ContinueWithOnMainThread(achievementTask =>
-                    {
-                        if (achievementTask.IsFaulted)
-                        {
-                            Debug.LogError("Failed to fetch achievement details: " + achievementTask.Exception);
-                            return;
-                        }
-
-                        DocumentSnapshot achievementSnapshot = achievementTask.Result;
-                        if (achievementSnapshot.Exists)
-                        {
-                            Achievement achievement = achievementSnapshot.ConvertTo<Achievement>();
-
-                            // Display achievement data
-                            DisplayAchievementData(userPoints, achievement, userAchievement.Progress, userAchievement.Achieved);
-                        }
-                    });
-                }
-            });
+            FetchUserAchievements(db, userRef);
         });
     }
 
-    void DisplayAchievementData(int userPoints, Achievement achievement, int progress, bool achieved)
+    void FetchUserAchievements(FirebaseFirestore db, DocumentReference userRef)
     {
-        // Display the data
-        Debug.Log($"User Points: {userPoints}");
-        Debug.Log($"Achievement Name: {achievement.Name}");
-        Debug.Log($"Description: {achievement.Description}");
-        Debug.Log($"Achievement Points: {achievement.Points}");
-        Debug.Log($"Progress: {progress}");
-        Debug.Log($"Achieved: {achieved}");
+        CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
+
+        userAchievementsRef.GetSnapshotAsync().ContinueWithOnMainThread(userAchievementsTask =>
+        {
+            if (userAchievementsTask.IsFaulted)
+            {
+                Debug.LogError("Failed to fetch user achievements: " + userAchievementsTask.Exception);
+                return;
+            }
+
+            List<DocumentSnapshot> userAchievementsSnapshots = userAchievementsTask.Result.Documents.ToList();
+            foreach (var userAchievementSnapshot in userAchievementsSnapshots)
+            {
+                string achievementId = userAchievementSnapshot.Id;
+                Dictionary<string, object> userAchievementData = userAchievementSnapshot.ToDictionary();
+
+                FetchAchievementDetails(db, achievementId, userAchievementData);
+            }
+        });
     }
 
+    void FetchAchievementDetails(FirebaseFirestore db, string achievementId, Dictionary<string, object> userAchievementData)
+    {
+        DocumentReference achievementRef = db.Collection("achievements").Document(achievementId);
+
+        achievementRef.GetSnapshotAsync().ContinueWithOnMainThread(achievementTask =>
+        {
+            if (achievementTask.IsFaulted)
+            {
+                Debug.LogError("Failed to fetch achievement details: " + achievementTask.Exception);
+                return;
+            }
+
+            DocumentSnapshot achievementSnapshot = achievementTask.Result;
+            if (achievementSnapshot.Exists)
+            {
+                string achievementName = achievementSnapshot.GetValue<string>("Name");
+                string description = achievementSnapshot.GetValue<string>("Description");
+                int achievementPoints = achievementSnapshot.GetValue<int>("Points");
+                int progress = Convert.ToInt32(userAchievementData["Progress"]);
+                bool achieved = Convert.ToBoolean(userAchievementData["Achieved"]);
+
+                UpdateUI(achievementName, description, achievementPoints, progress, achieved);
+            }
+        });
+    }
+
+    void UpdateUserPointsUI(int userPoints)
+    {
+        userPointsText.text = userPoints.ToString();
+    }
+
+    void UpdateUI(string achievementName, string description, int achievementPoints, int progress, bool achieved)
+    {
+        GameObject achievementPanel = Instantiate(achievementPanelPrefab, achievementsContainer);
+        Debug.Log("Prefab instantiated: " + achievementPanel.name); // Add this line for debugging
+        TextMeshProUGUI[] textFields = achievementPanel.GetComponentsInChildren<TextMeshProUGUI>();
+
+        if (textFields.Length >= 4)
+        {
+            textFields[0].text = achievementName;
+            textFields[1].text = description;
+            textFields[2].text = $"Points\n {achievementPoints}";
+            textFields[3].text = $"{progress}";
+        }
+        else
+        {
+            Debug.LogError("Not enough TMP_Text components found in achievementPanelPrefab.");
+        }
+
+        Image panelImage = achievementPanel.GetComponent<Image>();
+        if (panelImage != null)
+        {
+            panelImage.color = achieved ? Color.green : Color.red;
+        }
+        else
+        {
+            Debug.LogError("Image component not found in achievementPanelPrefab.");
+        }
+    }
 }
