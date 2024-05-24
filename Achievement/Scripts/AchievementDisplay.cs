@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Firebase.Extensions;
 using System.Linq;
+using System.Collections;
 
 public class AchievementDisplay : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class AchievementDisplay : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Start method called.");
         InitializeUser();
     }
 
@@ -26,6 +28,7 @@ public class AchievementDisplay : MonoBehaviour
         {
             userId = FirebaseController.Instance.user.UserId;
             DisplayUserAchievements(userId);
+            Debug.Log("Checked.");
         }
         else
         {
@@ -54,6 +57,7 @@ public class AchievementDisplay : MonoBehaviour
             }
 
             int userPoints = userSnapshot.GetValue<int>("points");
+            Debug.Log("Checked1.");
             UpdateUserPointsUI(userPoints);
 
             FetchUserAchievements(db, userRef);
@@ -73,51 +77,77 @@ public class AchievementDisplay : MonoBehaviour
             }
 
             List<DocumentSnapshot> userAchievementsSnapshots = userAchievementsTask.Result.Documents.ToList();
-            foreach (var userAchievementSnapshot in userAchievementsSnapshots)
-            {
-                string achievementId = userAchievementSnapshot.Id;
-                Dictionary<string, object> userAchievementData = userAchievementSnapshot.ToDictionary();
-
-                FetchAchievementDetails(db, achievementId, userAchievementData);
-            }
+            StartCoroutine(UpdateUIAfterFetch(userAchievementsSnapshots));
         });
     }
 
-    void FetchAchievementDetails(FirebaseFirestore db, string achievementId, Dictionary<string, object> userAchievementData)
+    IEnumerator UpdateUIAfterFetch(List<DocumentSnapshot> userAchievementsSnapshots)
     {
+        foreach (var userAchievementSnapshot in userAchievementsSnapshots)
+        {
+            string achievementId = userAchievementSnapshot.Id;
+            Dictionary<string, object> userAchievementData = userAchievementSnapshot.ToDictionary();
+
+            yield return FetchAchievementDetailsCoroutine(achievementId, userAchievementData);
+            Debug.Log("CheckedFetchUser.");
+        }
+    }
+
+    IEnumerator FetchAchievementDetailsCoroutine(string achievementId, Dictionary<string, object> userAchievementData)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference achievementRef = db.Collection("achievements").Document(achievementId);
 
-        achievementRef.GetSnapshotAsync().ContinueWithOnMainThread(achievementTask =>
+        var task = achievementRef.GetSnapshotAsync();
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsFaulted)
         {
-            if (achievementTask.IsFaulted)
+            Debug.LogError("Failed to fetch achievement details: " + task.Exception);
+            yield break;
+        }
+
+        DocumentSnapshot achievementSnapshot = task.Result;
+        if (achievementSnapshot.Exists)
+        {
+            string achievementName = achievementSnapshot.GetValue<string>("Name");
+            string description = achievementSnapshot.GetValue<string>("Description");
+            int achievementPoints = achievementSnapshot.GetValue<int>("Points");
+
+            // Check if "Progress" key exists in userAchievementData
+            if (!userAchievementData.ContainsKey("Progress"))
             {
-                Debug.LogError("Failed to fetch achievement details: " + achievementTask.Exception);
-                return;
+                // If "Progress" key doesn't exist, add it with a default value
+                userAchievementData["Progress"] = 0; // You can replace 0 with any default value you want
+            }
+            // Check if "Progress" key exists in userAchievementData
+            if (!userAchievementData.ContainsKey("Achieved"))
+            {
+                // If "Progress" key doesn't exist, add it with a default value
+                userAchievementData["Achieved"] = 0; // You can replace 0 with any default value you want
             }
 
-            DocumentSnapshot achievementSnapshot = achievementTask.Result;
-            if (achievementSnapshot.Exists)
-            {
-                string achievementName = achievementSnapshot.GetValue<string>("Name");
-                string description = achievementSnapshot.GetValue<string>("Description");
-                int achievementPoints = achievementSnapshot.GetValue<int>("Points");
-                int progress = Convert.ToInt32(userAchievementData["Progress"]);
-                bool achieved = Convert.ToBoolean(userAchievementData["Achieved"]);
+            // Fetch the progress value from userAchievementData
+            int progress = Convert.ToInt32(userAchievementData["Progress"]);
+            bool achieved = Convert.ToBoolean(userAchievementData["Achieved"]);
 
-                UpdateUI(achievementName, description, achievementPoints, progress, achieved);
-            }
-        });
+            UpdateUI(achievementName, description, achievementPoints, progress, achieved);
+            Debug.Log("Progress: " + userAchievementData["Progress"]);
+            Debug.Log("Achieved: " + userAchievementData["Achieved"]);
+        }
     }
+
 
     void UpdateUserPointsUI(int userPoints)
     {
         userPointsText.text = userPoints.ToString();
+        Debug.Log("Checked:P.");
     }
 
     void UpdateUI(string achievementName, string description, int achievementPoints, int progress, bool achieved)
     {
         GameObject achievementPanel = Instantiate(achievementPanelPrefab, achievementsContainer);
-        Debug.Log("Prefab instantiated: " + achievementPanel.name); // Add this line for debugging
+        Debug.Log("Prefab instantiated: " + achievementPanel.name);
         TextMeshProUGUI[] textFields = achievementPanel.GetComponentsInChildren<TextMeshProUGUI>();
 
         if (textFields.Length >= 4)
@@ -126,6 +156,7 @@ public class AchievementDisplay : MonoBehaviour
             textFields[1].text = description;
             textFields[2].text = $"Points\n {achievementPoints}";
             textFields[3].text = $"{progress}";
+            Debug.Log("Checkeddddd.");
         }
         else
         {
@@ -135,7 +166,10 @@ public class AchievementDisplay : MonoBehaviour
         Image panelImage = achievementPanel.GetComponent<Image>();
         if (panelImage != null)
         {
-            panelImage.color = achieved ? Color.green : Color.red;
+            Debug.Log("ColorCheckeddddd.");
+           
+
+            panelImage.color = achieved ? Color.red : Color.white;
         }
         else
         {
