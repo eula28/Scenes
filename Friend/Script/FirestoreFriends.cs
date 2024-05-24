@@ -7,9 +7,11 @@ using System;
 using Firebase.Extensions;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class FirestoreFriends : MonoBehaviour
 {
+    AchievementScript achievementScript = new AchievementScript();
     public Transform friendsListParent, friendRequestsListParent, searchFriendListParent;
     public GameObject friendPrefab, requestPrefab, searchPrefab, friendPanel, invitesPanel, searchPanel;
     public TextMeshProUGUI friendCountText, requestCountText;
@@ -18,17 +20,17 @@ public class FirestoreFriends : MonoBehaviour
     string username;
     public TMP_InputField searchReceiverUsername;
 
-    private void Start()
+    private async void Start()
     {
-        InitializeUser();
+        await InitializeUser();
     }
 
-    void InitializeUser()
+    async System.Threading.Tasks.Task InitializeUser()
     {
         if (FirebaseController.Instance != null)
         {
             userId = FirebaseController.Instance.auth.CurrentUser.UserId;
-            GetUsername(userId, username =>
+            await GetUsername(userId, username =>
             {
                 this.username = username;
                 if (string.IsNullOrEmpty(username))
@@ -47,10 +49,10 @@ public class FirestoreFriends : MonoBehaviour
         }
     }
 
-    void GetUsername(string userId, Action<string> callback)
+    async System.Threading.Tasks.Task GetUsername(string userId, Action<string> callback)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-        db.Collection("users").Document(userId).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        await db.Collection("users").Document(userId).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
@@ -88,14 +90,14 @@ public class FirestoreFriends : MonoBehaviour
 
     public void SendFriendRequest(string friendUsername)
     {
-        PerformFirestoreOperation((db, requesterUsername) =>
+        PerformFirestoreOperation(async (db, requesterUsername) =>
         {
             DocumentReference friendRequestRef = db.Collection("friendRequests").Document($"{requesterUsername}_{friendUsername}");
-            friendRequestRef.SetAsync(new Dictionary<string, object>
-        {
-            { "requester", requesterUsername },
-            { "receiver", friendUsername },
-            { "status", "pending" }
+            await friendRequestRef.SetAsync(new Dictionary<string, object>
+            {
+                { "requester", requesterUsername },
+                { "receiver", friendUsername },
+                { "status", "pending" }
             }).ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
@@ -116,13 +118,15 @@ public class FirestoreFriends : MonoBehaviour
         });
     }
 
-
     public void AcceptFriendRequest(string requesterUsername)
     {
-        PerformFirestoreOperation((db, receiverUsername) =>
+        PerformFirestoreOperation(async (db, receiverUsername) =>
         {
+            // Get the user ID of the requester
+            string requesterUserId = await GetUserIdByUsername(db, requesterUsername);
+
             DocumentReference friendRequestRef = db.Collection("friendRequests").Document($"{requesterUsername}_{receiverUsername}");
-            friendRequestRef.DeleteAsync().ContinueWithOnMainThread(task =>
+            await friendRequestRef.DeleteAsync().ContinueWithOnMainThread(async task =>
             {
                 if (task.IsFaulted)
                 {
@@ -130,18 +134,17 @@ public class FirestoreFriends : MonoBehaviour
                 }
                 else
                 {
-                    CreateFriendRelationship(db, requesterUsername, receiverUsername);
-                    CreateFriendRelationship(db, receiverUsername, requesterUsername);
+                    await CreateFriendRelationship(db, requesterUsername, receiverUsername);
+                    await CreateFriendRelationship(db, receiverUsername, requesterUsername);
                     Dictionary<string, object> userActions = new Dictionary<string, object>
-                    {
-                        { "5Friends", 1 },
-                        { "15Friends", 1 },
-                        { "10Friends", 1 }
-                    };
-
-                    AchievementScript achievementScript = new AchievementScript();
-                    achievementScript.UpdateUserAchievements(requesterUsername, userActions);
-                    achievementScript.UpdateUserAchievements(receiverUsername, userActions);
+                {
+                    { "5Friends", 1 },
+                    { "10Friends", 1 },
+                    { "15Friends", 1 }
+                };
+                    // Use the user ID instead of the username
+                    await achievementScript.UpdateUserAchievements(requesterUserId, userActions);
+                    await achievementScript.UpdateUserAchievements(userId, userActions);
 
                     Debug.Log("Friend request accepted.");
                     // Remove the prefab from the UI
@@ -155,13 +158,37 @@ public class FirestoreFriends : MonoBehaviour
         });
     }
 
+    // Method to get the user ID by username
+    private async Task<string> GetUserIdByUsername(FirebaseFirestore db, string username)
+    {
+        try
+        {
+            var snapshot = await db.Collection("users").WhereEqualTo("username", username).GetSnapshotAsync();
+
+            if (snapshot.Documents.Count() > 0)
+            {
+                var userDoc = snapshot.Documents.First();
+                return userDoc.Id;
+            }
+            else
+            {
+                Debug.LogError($"User with username '{username}' not found.");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error getting user ID by username: {ex.Message}");
+            return null;
+        }
+    }
 
     public void RejectFriendRequest(string requesterUsername)
     {
-        PerformFirestoreOperation((db, receiverUsername) =>
+        PerformFirestoreOperation(async (db, receiverUsername) =>
         {
             DocumentReference friendRequestRef = db.Collection("friendRequests").Document($"{requesterUsername}_{receiverUsername}");
-            friendRequestRef.DeleteAsync().ContinueWithOnMainThread(task =>
+            await friendRequestRef.DeleteAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
                 {
@@ -181,11 +208,10 @@ public class FirestoreFriends : MonoBehaviour
         });
     }
 
-
-    void CreateFriendRelationship(FirebaseFirestore db, string user1, string user2)
+    async System.Threading.Tasks.Task CreateFriendRelationship(FirebaseFirestore db, string user1, string user2)
     {
         DocumentReference friendRef = db.Collection("friendRelationships").Document($"{user1}_{user2}");
-        friendRef.SetAsync(new Dictionary<string, object>
+        await friendRef.SetAsync(new Dictionary<string, object>
         {
             { "user1", user1 },
             { "user2", user2 },
@@ -256,7 +282,6 @@ public class FirestoreFriends : MonoBehaviour
             }
         });
     }
-
 
     void AddFriendToUI(Transform parent, string friendUsername, string prefabType)
     {
@@ -350,9 +375,6 @@ public class FirestoreFriends : MonoBehaviour
             }
         });
     }
-
-
-
 
     void ClearUIList(Transform parent)
     {

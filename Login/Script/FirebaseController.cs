@@ -555,20 +555,20 @@ public class FirebaseController : MonoBehaviour
 
             Debug.Log("Firestore document created successfully for user: " + userId);
            //make subcollection for user achievements
-           AddMultipleUserAchievements(userId, new List<(string, bool, int, int)>
+           AddMultipleUserAchievements(userId, new List<(string, bool, int, int, string)>
             {
-                ("Setup", true, 1, 200),
-                ("5Friends", false, 0, 100),
-                ("10Friends", false, 0, 125),
-                ("15Friends",false,0, 150),
-                ("5AR", false, 0, 100),
-                ("10AR", false, 0, 125),
-                ("15AR",false, 0, 150)
+                ("Setup", true, 1, 200,"{type: 'setup', count: 1}"),
+                ("5Friends", false, 0, 100, "{type: 'friend5', count: 5}"),
+                ("10Friends", false, 0, 125, "{type: 'friend10', count: 10}"),
+                ("15Friends",false,0, 150, "{type: 'friend15', count: 15}"),
+                ("5AR", false, 0, 100, "{type: 'ar5', count: 5}"),
+                ("10AR", false, 0, 125, "{type: 'ar10', count: 10}"),
+                ("15AR",false, 0, 150, "{type: 'friend15', count: 15}")
             });
         });
     }
 
-    public void AddMultipleUserAchievements(string userId, List<(string achievementId, bool achieved, int progress, int points)> achievements)
+    public void AddMultipleUserAchievements(string userId, List<(string achievementId, bool achieved, int progress, int points, string criteria)> achievements)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         WriteBatch batch = db.StartBatch();
@@ -579,7 +579,8 @@ public class FirebaseController : MonoBehaviour
             {
                 { "achieved", achievement.achieved },
                 { "progress", achievement.progress },
-                { "points", achievement.points}
+                { "points", achievement.points},
+                { "criteria", achievement.criteria}
             };
 
             DocumentReference userAchievementDocRef = db.Collection("users").Document(userId).Collection("userAchievements").Document(achievement.achievementId);

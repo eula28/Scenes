@@ -2,10 +2,12 @@ using Firebase.Firestore;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Extensions;
+using System.Threading.Tasks;
+using System;
 
-public class AchievementScript : MonoBehaviour
+public class AchievementScript
 {
-    public void UpdateUserAchievements(string userId, Dictionary<string, object> userActions)
+    public async Task UpdateUserAchievements(string userId, Dictionary<string, object> userActions)
     {
         // Check if the FirebaseController instance exists
         if (FirebaseController.Instance != null)
@@ -13,91 +15,132 @@ public class AchievementScript : MonoBehaviour
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userRef = db.Collection("users").Document(userId);
 
-            // Fetch user data
-            userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            try
             {
-                if (task.IsFaulted)
+                // Fetch user data
+                DocumentSnapshot userSnapshot = await userRef.GetSnapshotAsync();
+
+                if (!userSnapshot.Exists)
                 {
-                    Debug.LogError("Failed to fetch user data: " + task.Exception);
-                    return;
+                    // If user document doesn't exist, create it with default data
+                    await userRef.SetAsync(new Dictionary<string, object>
+                    {
+                        { "points", 0 } // Set default points to 0 or any other default values
+                        // Add other default fields if needed
+                    });
                 }
 
-                // Get user document snapshot
-                DocumentSnapshot userSnapshot = task.Result;
+                // Retrieve user data again after creating if it didn't exist before
+                userSnapshot = await userRef.GetSnapshotAsync();
 
-                // Extract user points from the snapshot
-                int currentPoints = 0;
                 if (userSnapshot.Exists)
                 {
                     Dictionary<string, object> userData = userSnapshot.ToDictionary();
-                    if (userData.ContainsKey("points"))
+                    int currentPoints = userData.ContainsKey("points") ? (int)(long)userData["points"] : 0;
+
+                    // Get userAchievements subcollection
+                    CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
+
+                    // List to hold tasks for achievements and points update
+                    List<Task> tasks = new List<Task>();
+
+                    // Iterate through user actions
+                    foreach (var action in userActions)
                     {
-                        currentPoints = (int)(long)userData["points"]; // Firestore returns long for integer types
-                    }
-                }
+                        string achievementId = action.Key;
+                        int actionCount = (int)action.Value;
 
-                // Get userAchievements subcollection
-                CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
+                        // Check if achievement exists
+                        DocumentReference achievementDocRef = userAchievementsRef.Document(achievementId);
+                        DocumentSnapshot achievementSnapshot = await achievementDocRef.GetSnapshotAsync();
 
-                // Iterate through user actions
-                foreach (var action in userActions)
-                {
-                    string achievementId = action.Key;
-                    int actionCount = (int)action.Value;
-
-                    // Check if achievement exists
-                    DocumentReference achievementDocRef = userAchievementsRef.Document(achievementId);
-                    achievementDocRef.GetSnapshotAsync().ContinueWithOnMainThread(achievementTask =>
-                    {
-                        if (achievementTask.Result.Exists)
+                        if (achievementSnapshot.Exists)
                         {
-                            Dictionary<string, object> achievementData = achievementTask.Result.ToDictionary();
+                            Dictionary<string, object> achievementData = achievementSnapshot.ToDictionary();
 
-                            // Check if achievement criteria are met
-                            if (achievementData.ContainsKey("Criteria") && actionCount >= ((List<object>)achievementData["Criteria"]).Count)
+                            // Update progress
+                            int currentProgress = achievementData.ContainsKey("progress") ? (int)(long)achievementData["progress"] : 0;
+                            int newProgress = currentProgress + actionCount;
+
+                            // Update or create achievement document
+                            Dictionary<string, object> updateData = new Dictionary<string, object>
                             {
-                                // Check if achievement is not already achieved
-                                bool isAchieved = false;
-                                if (achievementData.ContainsKey("achieved"))
+                                { "progress", newProgress }
+                            };
+
+                            // Check if criteria are met
+                            if (CriteriaMet(achievementData, newProgress))
+                            {
+                                // Add points to the user and reset progress
+                                int pointsToAdd = (int)(long)achievementData["points"];
+                                int updatedPoints = currentPoints + pointsToAdd;
+
+                                // Update user points in the database
+                                Dictionary<string, object> userDataUpdate = new Dictionary<string, object>
                                 {
-                                    isAchieved = (bool)achievementData["achieved"];
-                                }
+                                    { "points", updatedPoints }
+                                };
 
-                                if (!isAchieved)
-                                {
-                                    // Update progress
-                                    int progress = actionCount;
+                                // Add task for updating user points
+                                tasks.Add(userRef.SetAsync(userDataUpdate, SetOptions.MergeAll));
 
-                                    // Update or create achievement document
-                                    Dictionary<string, object> updateData = new Dictionary<string, object>
-                                    {
-                                        { "achieved", true },
-                                        { "progress", progress }
-                                    };
-
-                                    achievementDocRef.SetAsync(updateData, SetOptions.MergeAll);
-
-                                    // Update user points
-                                    int pointsToAdd = actionCount; // You can adjust this based on your game logic
-                                    int updatedPoints = currentPoints + pointsToAdd;
-
-                                    // Update user points in the database
-                                    Dictionary<string, object> userData = new Dictionary<string, object>
-                                    {
-                                        { "points", updatedPoints }
-                                    };
-
-                                    userRef.SetAsync(userData, SetOptions.MergeAll);
-                                }
+                                // Reset progress
+                                updateData["progress"] = 0;
                             }
+
+                            // Set achievement to true only if criteria are met
+                            updateData["achieved"] = CriteriaMet(achievementData, newProgress);
+
+                            // Add task for updating achievement
+                            tasks.Add(achievementDocRef.SetAsync(updateData, SetOptions.MergeAll));
                         }
-                    });
+                        else
+                        {
+                            Debug.Log($"Achievement {achievementId} does not exist.");
+                        }
+                    }
+
+                    // Wait for all tasks to complete
+                    await Task.WhenAll(tasks);
                 }
-            });
+                else
+                {
+                    Debug.LogError("Failed to fetch or create user data.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error updating user achievements: " + ex);
+            }
         }
         else
         {
             Debug.LogError("FirebaseController instance not found.");
         }
     }
+
+    private bool CriteriaMet(Dictionary<string, object> achievementData, int progress)
+    {
+        if (!achievementData.ContainsKey("criteria")) return false;
+
+        Dictionary<string, object> criteria = (Dictionary<string, object>)achievementData["criteria"];
+        string type = criteria["type"].ToString();
+
+        switch (type)
+        {
+            case "friend5":
+                int requiredFriends5 = (int)criteria["count"];
+                return progress >= requiredFriends5;
+            case "friend10":
+                int requiredFriends10 = (int)criteria["count"];
+                return progress >= requiredFriends10;
+            case "friend15":
+                int requiredFriends15 = (int)criteria["count"];
+                return progress >= requiredFriends15;
+            default:
+                Debug.LogError($"Unsupported criteria type: {type}");
+                return false;
+        }
+    }
+
 }
