@@ -114,28 +114,16 @@ public class AchievementDisplay : MonoBehaviour
             string description = achievementSnapshot.GetValue<string>("Description");
             int achievementPoints = achievementSnapshot.GetValue<int>("Points");
 
-            // Check if "Progress" key exists in userAchievementData
-            if (!userAchievementData.ContainsKey("Progress"))
-            {
-                // If "Progress" key doesn't exist, add it with a default value
-                userAchievementData["Progress"] = 0; // You can replace 0 with any default value you want
-            }
-            // Check if "Progress" key exists in userAchievementData
-            if (!userAchievementData.ContainsKey("Achieved"))
-            {
-                // If "Progress" key doesn't exist, add it with a default value
-                userAchievementData["Achieved"] = 0; // You can replace 0 with any default value you want
-            }
-
-            // Fetch the progress value from userAchievementData
-            int progress = Convert.ToInt32(userAchievementData["Progress"]);
-            bool achieved = Convert.ToBoolean(userAchievementData["Achieved"]);
+            // Fetch the progress value from userAchievementData using lowercase keys
+            int progress = Convert.ToInt32(userAchievementData["progress"]);
+            bool achieved = Convert.ToBoolean(userAchievementData["achieved"]);
 
             UpdateUI(achievementName, description, achievementPoints, progress, achieved);
-            Debug.Log("Progress: " + userAchievementData["Progress"]);
-            Debug.Log("Achieved: " + userAchievementData["Achieved"]);
+            Debug.Log("Progress: " + userAchievementData["progress"]);
+            Debug.Log("Achieved: " + userAchievementData["achieved"]);
         }
     }
+
 
 
     void UpdateUserPointsUI(int userPoints)
@@ -169,7 +157,7 @@ public class AchievementDisplay : MonoBehaviour
             Debug.Log("ColorCheckeddddd.");
            
 
-            panelImage.color = achieved ? Color.red : Color.white;
+            panelImage.color = achieved ? Color.white : Color.green;
         }
         else
         {
