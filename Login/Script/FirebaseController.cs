@@ -538,7 +538,7 @@ public class FirebaseController : MonoBehaviour
             { "discoveries", 0 },
             { "task achieved", 0},
             { "landmark visited", 0},
-            { "points", 0},
+            { "points", 200},
             { "date start", formattedDateTime}
         };
 

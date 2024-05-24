@@ -132,6 +132,17 @@ public class FirestoreFriends : MonoBehaviour
                 {
                     CreateFriendRelationship(db, requesterUsername, receiverUsername);
                     CreateFriendRelationship(db, receiverUsername, requesterUsername);
+                    Dictionary<string, object> userActions = new Dictionary<string, object>
+                    {
+                        { "5Friends", 1 },
+                        { "15Friends", 1 },
+                        { "10Friends", 1 }
+                    };
+
+                    AchievementScript achievementScript = new AchievementScript();
+                    achievementScript.UpdateUserAchievements(requesterUsername, userActions);
+                    achievementScript.UpdateUserAchievements(receiverUsername, userActions);
+
                     Debug.Log("Friend request accepted.");
                     // Remove the prefab from the UI
                     Transform itemToRemove = friendRequestsListParent.Find(requesterUsername);

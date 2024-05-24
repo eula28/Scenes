@@ -12,6 +12,8 @@ public class AchievementScript : MonoBehaviour
         {
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userRef = db.Collection("users").Document(userId);
+
+            // Fetch user data
             userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
@@ -20,8 +22,19 @@ public class AchievementScript : MonoBehaviour
                     return;
                 }
 
+                // Get user document snapshot
                 DocumentSnapshot userSnapshot = task.Result;
-                Dictionary<string, object> userData = userSnapshot.ToDictionary();
+
+                // Extract user points from the snapshot
+                int currentPoints = 0;
+                if (userSnapshot.Exists)
+                {
+                    Dictionary<string, object> userData = userSnapshot.ToDictionary();
+                    if (userData.ContainsKey("points"))
+                    {
+                        currentPoints = (int)(long)userData["points"]; // Firestore returns long for integer types
+                    }
+                }
 
                 // Get userAchievements subcollection
                 CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
@@ -43,14 +56,39 @@ public class AchievementScript : MonoBehaviour
                             // Check if achievement criteria are met
                             if (achievementData.ContainsKey("Criteria") && actionCount >= ((List<object>)achievementData["Criteria"]).Count)
                             {
-                                Dictionary<string, object> updateData = new Dictionary<string, object>
+                                // Check if achievement is not already achieved
+                                bool isAchieved = false;
+                                if (achievementData.ContainsKey("achieved"))
                                 {
-                                    { "achieved", true },
-                                    { "progress", actionCount }
-                                };
+                                    isAchieved = (bool)achievementData["achieved"];
+                                }
 
-                                // Update or create achievement document
-                                achievementDocRef.SetAsync(updateData, SetOptions.MergeAll);
+                                if (!isAchieved)
+                                {
+                                    // Update progress
+                                    int progress = actionCount;
+
+                                    // Update or create achievement document
+                                    Dictionary<string, object> updateData = new Dictionary<string, object>
+                                    {
+                                        { "achieved", true },
+                                        { "progress", progress }
+                                    };
+
+                                    achievementDocRef.SetAsync(updateData, SetOptions.MergeAll);
+
+                                    // Update user points
+                                    int pointsToAdd = actionCount; // You can adjust this based on your game logic
+                                    int updatedPoints = currentPoints + pointsToAdd;
+
+                                    // Update user points in the database
+                                    Dictionary<string, object> userData = new Dictionary<string, object>
+                                    {
+                                        { "points", updatedPoints }
+                                    };
+
+                                    userRef.SetAsync(userData, SetOptions.MergeAll);
+                                }
                             }
                         }
                     });
