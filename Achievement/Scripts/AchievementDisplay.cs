@@ -155,9 +155,13 @@ public class AchievementDisplay : MonoBehaviour
         if (panelImage != null)
         {
             Debug.Log("ColorCheckeddddd.");
-           
 
-            panelImage.color = achieved ? Color.white : Color.green;
+
+            // Define custom colors using RGBA values
+            Color notAchievedColor = new Color32(22, 91, 0, 255); // Color #165B00
+            Color achievedColor = new Color32(103, 203, 71, 255); // Color #67CB47
+
+            panelImage.color = achieved ? achievedColor : notAchievedColor;
         }
         else
         {
