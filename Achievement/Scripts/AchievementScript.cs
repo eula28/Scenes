@@ -1,61 +1,61 @@
-using Firebase.Extensions;
 using Firebase.Firestore;
 using System.Collections.Generic;
 using UnityEngine;
+using Firebase.Extensions;
+using System.Threading.Tasks;
+using System;
 
-public class AchievementScript : MonoBehaviour
+public class AchievementScript
 {
-    public void UpdateUserAchievements(string userId, Dictionary<string, object> userActions)
+    public async Task UpdateUserAchievements(string userId, Dictionary<string, object> userActions)
     {
         // Check if the FirebaseController instance exists
         if (FirebaseController.Instance != null)
         {
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userRef = db.Collection("users").Document(userId);
-            userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+
+            // Get reference to userAchievements collection for the user
+            CollectionReference userAchievementsRef = db.Collection("users").Document(userId).Collection("userAchievements");
+
+            foreach (var action in userActions)
             {
-                if (task.IsFaulted)
+                // Get reference to the specific userAchievement document
+                DocumentReference userAchievementDocRef = userAchievementsRef.Document(action.Key);
+
+                // Get the current achievement data
+                DocumentSnapshot snapshot = await userAchievementDocRef.GetSnapshotAsync();
+                if (snapshot.Exists)
                 {
-                    Debug.LogError("Failed to fetch user data: " + task.Exception);
-                    return;
-                }
+                    Dictionary<string, object> achievementData = snapshot.ToDictionary();
 
-                DocumentSnapshot userSnapshot = task.Result;
-                Dictionary<string, object> userData = userSnapshot.ToDictionary();
+                    // Update progress
+                    int progress = achievementData.ContainsKey("progress") ? Convert.ToInt32(achievementData["progress"]) : 0;
+                    int criteria = achievementData.ContainsKey("criteria") ? Convert.ToInt32(achievementData["criteria"]) : 0;
+                    progress += (int)action.Value;
 
-                // Get userAchievements subcollection
-                CollectionReference userAchievementsRef = userRef.Collection("userAchievements");
-
-                // Iterate through user actions
-                foreach (var action in userActions)
-                {
-                    string achievementId = action.Key;
-                    int actionCount = (int)action.Value;
-
-                    // Check if achievement exists
-                    DocumentReference achievementDocRef = userAchievementsRef.Document(achievementId);
-                    achievementDocRef.GetSnapshotAsync().ContinueWithOnMainThread(achievementTask =>
+                    // Check if progress meets criteria
+                    if (progress >= criteria && !(bool)achievementData["achieved"])
                     {
-                        if (achievementTask.Result.Exists)
+                        // Update achievement status to achieved
+                        achievementData["achieved"] = true;
+                        // Add points to the user
+                        int points = achievementData.ContainsKey("points") ? Convert.ToInt32(achievementData["points"]) : 0;
+                        await db.Collection("users").Document(userId).UpdateAsync(new Dictionary<string, object>
                         {
-                            Achievement achievement = achievementTask.Result.ConvertTo<Achievement>();
+                            { "points", FieldValue.Increment(points) }
+                        });
+                    }
 
-                            // Check if achievement criteria are met
-                            if (achievement.Criteria != null && actionCount >= achievement.Criteria.Count)
-                            {
-                                Dictionary<string, object> achievementData = new Dictionary<string, object>
-                                {
-                                    { "achieved", true },
-                                    { "progress", actionCount }
-                                };
-
-                                // Update or create achievement document
-                                achievementDocRef.SetAsync(achievementData, SetOptions.MergeAll);
-                            }
-                        }
-                    });
+                    // Update progress in userAchievements collection
+                    achievementData["progress"] = progress;
+                    await userAchievementDocRef.UpdateAsync(achievementData);
                 }
-            });
+                else
+                {
+                    Console.WriteLine($"Achievement {action.Key} does not exist for user {userId}.");
+                }
+            }
         }
         else
         {

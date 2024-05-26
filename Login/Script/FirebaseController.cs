@@ -241,9 +241,6 @@ public class FirebaseController : MonoBehaviour
         {
             GoogleSignIn.DefaultInstance.SignOut();
         }
-        // Clear profile data and open login panel
-        //profileUsernameText.text = "";
-        //profileEmailText.text = "";
         SceneManager.LoadScene("Welcome-Screen");
     }
 
@@ -538,7 +535,7 @@ public class FirebaseController : MonoBehaviour
             { "discoveries", 0 },
             { "task achieved", 0},
             { "landmark visited", 0},
-            { "points", 0},
+            { "points", 250},
             { "date start", formattedDateTime}
         };
 
@@ -555,20 +552,20 @@ public class FirebaseController : MonoBehaviour
 
             Debug.Log("Firestore document created successfully for user: " + userId);
            //make subcollection for user achievements
-           AddMultipleUserAchievements(userId, new List<(string, bool, int, int)>
+           AddMultipleUserAchievements(userId, new List<(string, bool, int, int, int)>
             {
-                ("Setup", true, 1, 200),
-                ("5Friends", false, 0, 100),
-                ("10Friends", false, 0, 125),
-                ("15Friends",false,0, 150),
-                ("5AR", false, 0, 100),
-                ("10AR", false, 0, 125),
-                ("15AR",false, 0, 150)
+                ("Setup", true, 1, 200, 1),
+                ("5Friends", false, 0, 100, 5),
+                ("10Friends", false, 0, 125, 10),
+                ("15Friends",false,0, 150, 15),
+                ("5AR", false, 0, 100, 5),
+                ("10AR", false, 0, 125, 10),
+                ("15AR",false, 0, 150, 15)
             });
         });
     }
 
-    public void AddMultipleUserAchievements(string userId, List<(string achievementId, bool achieved, int progress, int points)> achievements)
+    public void AddMultipleUserAchievements(string userId, List<(string achievementId, bool achieved, int progress, int points, int criteria)> achievements)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         WriteBatch batch = db.StartBatch();
@@ -579,7 +576,8 @@ public class FirebaseController : MonoBehaviour
             {
                 { "achieved", achievement.achieved },
                 { "progress", achievement.progress },
-                { "points", achievement.points}
+                { "points", achievement.points},
+                { "criteria", achievement.criteria}
             };
 
             DocumentReference userAchievementDocRef = db.Collection("users").Document(userId).Collection("userAchievements").Document(achievement.achievementId);
