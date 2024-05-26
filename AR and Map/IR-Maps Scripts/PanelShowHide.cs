@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class Try : MonoBehaviour
 {
-    public Button IdeaButton,CaptureButton,BackButton, exit, JuanitoButton;
-    public GameObject IdeaButtonPanel, juanitoPanel;
+    public Button IdeaButton,CaptureButton,BackButton, exit;
+    public GameObject IdeaButtonPanel, juanitoPanel, imuscathedralmarkerPanel, imuscathedralheritagebellsPanel, imuscathedralPanel, imusplazacarabaoPanel, imusplazaPanel, imusplazageneraltopacioPanel, pillarlodgeno3Panel;
 
     public void ideabutton() {
         IdeaButtonPanel.SetActive(true);
@@ -13,6 +13,13 @@ public class Try : MonoBehaviour
         CaptureButton.gameObject.SetActive(false);
         BackButton.gameObject.SetActive(false);
         juanitoPanel.SetActive(false);
+        imuscathedralmarkerPanel.SetActive(false);
+        imuscathedralheritagebellsPanel.SetActive(false);
+        imuscathedralPanel.SetActive(false);
+        imusplazacarabaoPanel.SetActive(false);
+        imusplazaPanel.SetActive(false);
+        imusplazageneraltopacioPanel.SetActive(false);
+        pillarlodgeno3Panel.SetActive(false);
     }
     public void Exit()
     {
@@ -23,6 +30,7 @@ public class Try : MonoBehaviour
 
     }
 
+//======================================================================================================================
     public void Juanitobtn()
     {
         juanitoPanel.SetActive(true);
@@ -30,12 +38,103 @@ public class Try : MonoBehaviour
         IdeaButton.gameObject.SetActive(true);
         CaptureButton.gameObject.SetActive(true);
         BackButton.gameObject.SetActive(true);
-
     }
     public void JuanitoPanelRemove(){
         juanitoPanel.SetActive(false);
     }
 
+//======================================================================================================================
 
+    public void imuscathedralmarker_btn()
+    {
+        imuscathedralmarkerPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusCathedralMarkerPanelRemove(){
+        imuscathedralmarkerPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+
+    public void imuscathedralheritagebells_btn()
+    {
+        imuscathedralheritagebellsPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusCathedralHeritageBellsPanelRemove(){
+        imuscathedralheritagebellsPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+
+    public void imuscathedral_btn()
+    {
+        imuscathedralPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusCathedralPanelRemove(){
+        imuscathedralPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void imusplazacarabao_btn()
+    {
+        imusplazacarabaoPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusPlazaCarabaoPanelRemove(){
+        imusplazacarabaoPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void imusplaza_btn()
+    {
+        imusplazaPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusPlazaPanelRemove(){
+        imusplazaPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void imusplazageneraltopacio_btn()
+    {
+        imusplazageneraltopacioPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusPlazaGeneralTopacioPanelRemove(){
+        imusplazageneraltopacioPanel.SetActive(false);
+    }
+    
+//======================================================================================================================
+    public void pillarlodgeno3_btn()
+    {
+        pillarlodgeno3Panel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void PillarLodgeNo3PanelRemove(){
+        pillarlodgeno3Panel.SetActive(false);
+    }
 
 }
