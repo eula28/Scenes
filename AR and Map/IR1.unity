@@ -4234,7 +4234,7 @@ GameObject:
   - component: {fileID: 774982361}
   - component: {fileID: 774982360}
   m_Layer: 5
-  m_Name: BacktoAccount Button
+  m_Name: Back to Map btn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4305,7 +4305,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1388361322}
-        m_TargetAssemblyTypeName: ToAccount, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtontoMap, Assembly-CSharp
         m_MethodName: OnMouseUpAsButton
         m_Mode: 1
         m_Arguments:
@@ -4433,7 +4433,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -111, y: -116}
-  m_SizeDelta: {x: 34.5, y: 40.55}
+  m_SizeDelta: {x: 34.5, y: 40.55005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &803786614
 MonoBehaviour:
@@ -8129,7 +8129,7 @@ GameObject:
   - component: {fileID: 1388361321}
   - component: {fileID: 1388361322}
   m_Layer: 5
-  m_Name: Script to Account Screen
+  m_Name: Script to Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8163,10 +8163,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1388361320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8e891fab81b0ff4bbee2680fe0c5751, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a5eaa0ab5bb5cc44985eb38ee9b39ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toAccount: Account
+  Map: Map
 --- !u!1 &1406864221
 GameObject:
   m_ObjectHideFlags: 0
