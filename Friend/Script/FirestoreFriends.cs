@@ -470,6 +470,7 @@ public class FirestoreFriends : MonoBehaviour
                         if (friendRequestSnapshot.Documents.Count() == 0)
                         {
                             AddFriendToUI(searchFriendListParent, foundUsername, "search");
+                            searchReceiverUsername.text = "";
                             Debug.Log("User Found!." + foundUsername);
                         }
                         else
