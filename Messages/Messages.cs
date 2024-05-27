@@ -23,8 +23,8 @@ public class Messages : MonoBehaviour
         {
             userId = FirebaseController.Instance.user.UserId;
             db = FirebaseFirestore.DefaultInstance;
-            friendDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
             FetchUsername(userId);
+            friendDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         }
         else
         {
@@ -67,7 +67,7 @@ public class Messages : MonoBehaviour
         });
     }
 
-    private void FetchUsername(string userId)
+    public void FetchUsername(string userId)
     {
         // First, fetch the user document to get the username
         DocumentReference userRef = db.Collection("users").Document(userId);
@@ -215,6 +215,7 @@ public class Messages : MonoBehaviour
 
     private void PopulateDropdown(List<string> friendsWithoutMessages)
     {
+        friendsWithoutMessages.Insert(0, "");
         friendDropdown.ClearOptions();
         friendDropdown.AddOptions(friendsWithoutMessages);
     }
