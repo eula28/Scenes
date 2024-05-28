@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -862,7 +862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Pillar Lodge No. 3
 --- !u!64 &307015266
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2235,7 +2235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Cathedral
 --- !u!64 &481817181
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2503,7 +2503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: CvSU - Imus
 --- !u!1 &549286721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4683,7 +4683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Cathedral
 --- !u!64 &814971459
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4804,7 +4804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Plaza
 --- !u!64 &847835879
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5729,7 +5729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Plaza
 --- !u!64 &997099794
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9986,7 +9986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Cathedral
 --- !u!64 &1687837896
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10606,7 +10606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7602de03284f92d41862875e5cc0c314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedback: 
+  location: Imus Plaza
 --- !u!64 &1786213830
 MeshCollider:
   m_ObjectHideFlags: 0
