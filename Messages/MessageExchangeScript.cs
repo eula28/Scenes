@@ -17,8 +17,11 @@ public class MessageExchangeScript : MonoBehaviour
     public GameObject receivedMessagePrefab;
     public TMP_Text usernameHead;
     public string friendUsername;
-
     private IDisposable messageListener;
+    private List<MessageData> previousMessages = new List<MessageData>();
+    private bool messagesChanged = false;
+    private float checkInterval = 2f; // Check for changes every 2 seconds
+    private float timer = 0f;
 
     async void Start()
     {
@@ -99,12 +102,6 @@ public class MessageExchangeScript : MonoBehaviour
             return;
         }
 
-        // Clear the message container
-        foreach (Transform child in messageContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
         List<MessageData> messages = new List<MessageData>();
 
         try
@@ -169,7 +166,42 @@ public class MessageExchangeScript : MonoBehaviour
             Debug.LogError("Failed to fetch and populate messages: " + ex);
         }
 
+        if (!MessagesChanged(messages))
+        {
+            // If no changes, exit early without updating UI
+            return;
+        }
+
+        // Update previous messages to current state
+        previousMessages = messages;
+
+        // Clear the message container
+        foreach (Transform child in messageContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
         InstantiateMessagePrefabs(messages);
+    }
+
+    private bool MessagesChanged(List<MessageData> currentMessages)
+    {
+        // If the number of messages is different, return true (changed)
+        if (currentMessages.Count != previousMessages.Count)
+        {
+            return true;
+        }
+
+        // Compare each message in current and previous lists
+        for (int i = 0; i < currentMessages.Count; i++)
+        {
+            if (!currentMessages[i].Equals(previousMessages[i]))
+            {
+                return true; // If any message is different, return true (changed)
+            }
+        }
+
+        return false; // If all messages are the same, return false (not changed)
     }
 
 
@@ -214,10 +246,35 @@ public class MessageExchangeScript : MonoBehaviour
             {
                 // Whenever a new message is received, fetch and populate the messages
                 await FetchLatestMessagesAndPopulate();
+                messagesChanged = true;
             });
     }
 
-    private void OnDisable()
+    void FixedUpdate()
+    {
+        // Check for changes every 2 seconds
+        timer += Time.fixedDeltaTime;
+        if (timer >= checkInterval)
+        {
+            timer = 0f;
+
+            StartMessageListener(); // Check if messages have changed, then fetch and populate
+            Debug.Log("checking");
+            if (messagesChanged)
+            {
+                // Reset the flag
+                messagesChanged = false;
+                // Fetch and populate latest messages
+                if (!string.IsNullOrEmpty(username))
+                {
+                    Debug.Log("fetched");
+                    _ = FetchLatestMessagesAndPopulate();
+                }
+            }
+        }
+    }
+
+        private void OnDisable()
     {
         if (messageListener != null)
         {

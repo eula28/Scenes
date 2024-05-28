@@ -20,6 +20,12 @@ public class MessageShow : MonoBehaviour
     public GameObject messagePrefab;
     public ProfileDatabase profileDB; // Assuming you have a ProfileDatabase script or component
     public MessageExchangeScript targetScript;
+    private bool messagesChanged = false;
+    private float checkInterval = 2f; // Check for changes every 2 seconds
+    private float timer = 0f;
+    private List<MessageData> previousMessages = new List<MessageData>(); // Store previous state of messages
+    private ListenerRegistration messageListenerSentByUser;
+    private ListenerRegistration messageListenerSentToUser;
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +46,7 @@ public class MessageShow : MonoBehaviour
 
     private async Task FetchLatestMessagesAndPopulate(string username)
     {
-        // Clear the message container
-        foreach (Transform child in messageContainer)
-        {
-            Destroy(child.gameObject);
-        }
+        
 
         List<MessageData> messagesList = new List<MessageData>();
 
@@ -56,7 +58,7 @@ public class MessageShow : MonoBehaviour
                 Query senderMessagesQuery = db.Collection("messages")
                     .WhereEqualTo("sender", username)
                     .WhereEqualTo("receiver", friend)
-                    .OrderBy("timestamp") // Fetch latest message first
+                    .OrderByDescending("timestamp") // Fetch latest message first
                     .Limit(1);
 
                 var senderMessageSnapshot = await senderMessagesQuery.GetSnapshotAsync();
@@ -65,7 +67,7 @@ public class MessageShow : MonoBehaviour
                 Query receiverMessagesQuery = db.Collection("messages")
                     .WhereEqualTo("receiver", username)
                     .WhereEqualTo("sender", friend)
-                    .OrderBy("timestamp") // Fetch latest message first
+                    .OrderByDescending("timestamp") // Fetch latest message first
                     .Limit(1);
 
                 var receiverMessageSnapshot = await receiverMessagesQuery.GetSnapshotAsync();
@@ -82,6 +84,7 @@ public class MessageShow : MonoBehaviour
                     if (latestMessageDoc == null || latestReceiverMessageDoc.GetValue<Timestamp>("timestamp") > latestMessageDoc.GetValue<Timestamp>("timestamp"))
                     {
                         latestMessageDoc = latestReceiverMessageDoc;
+
                     }
                 }
 
@@ -128,8 +131,45 @@ public class MessageShow : MonoBehaviour
 
         // Sort the combined list of messages by timestamp
         messagesList.Sort((x, y) => y.Timestamp.CompareTo(x.Timestamp));
+
+        // Compare current messages with previous messages
+        if (!MessagesChanged(messagesList))
+        {
+            // If no changes, exit early without updating UI
+            return;
+        }
+
+        // Clear the message container
+        foreach (Transform child in messageContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Update previous messages to current state
+        previousMessages = messagesList;
+
         // Instantiate message prefabs with the combined list
         InstantiateMessagePrefabs(messagesList);
+    }
+
+    private bool MessagesChanged(List<MessageData> currentMessages)
+    {
+        // If the number of messages is different, return true (changed)
+        if (currentMessages.Count != previousMessages.Count)
+        {
+            return true;
+        }
+
+        // Compare each message in current and previous lists
+        for (int i = 0; i < currentMessages.Count; i++)
+        {
+            if (!currentMessages[i].Equals(previousMessages[i]))
+            {
+                return true; // If any message is different, return true (changed)
+            }
+        }
+
+        return false; // If all messages are the same, return false (not changed)
     }
 
     private void InstantiateMessagePrefabs(List<MessageData> messagesList)
@@ -162,20 +202,54 @@ public class MessageShow : MonoBehaviour
         }
     }
 
-    private void StartMessageListener()
+    void StartMessageListener()
     {
         CollectionReference messagesCollectionRef = db.Collection("messages");
 
-        // Start listening to changes in the messages collection
-        messageListener = messagesCollectionRef
-            .WhereIn("receiver", friendsList)
-            .WhereEqualTo("sender", username)  // Listen for messages sent by the user
+        // Listen for messages sent by the user
+        messageListenerSentByUser = messagesCollectionRef
+            .WhereEqualTo("sender", username)
             .Listen(snapshot =>
             {
-                // Whenever a new message is received, fetch and populate the messages
-                _ = FetchLatestMessagesAndPopulate(username);
+                // Set flag to indicate that messages sent by the user have changed
+                messagesChanged = true;
+                Debug.Log("set to true");
+            });
+
+        // Listen for messages sent to the user
+        messageListenerSentToUser = messagesCollectionRef
+            .WhereEqualTo("receiver", username)
+            .Listen(snapshot =>
+            {
+                // Set flag to indicate that messages sent to the user have changed
+                messagesChanged = true;
+                Debug.Log("set to true received");
             });
     }
+
+    void FixedUpdate()
+{
+    // Check for changes every 2 seconds
+    timer += Time.fixedDeltaTime;
+    if (timer >= checkInterval)
+    {
+        timer = 0f;
+
+        StartMessageListener(); // Check if messages have changed, then fetch and populate
+        Debug.Log("checking");
+        if (messagesChanged)
+        {
+            // Reset the flag
+            messagesChanged = false;
+            // Fetch and populate latest messages
+            if (!string.IsNullOrEmpty(username))
+            {
+                Debug.Log("fetched");
+                _ = FetchLatestMessagesAndPopulate(username);
+            }
+        }
+    }
+}
 
     private void FetchUsername(string userId)
     {
@@ -258,9 +332,6 @@ public class MessageShow : MonoBehaviour
                                 friendsList.Add(user1);
                             }
                         }
-
-                        // Once friends are fetched, start listening for messages
-                        StartMessageListener();
                     }
                     else
                     {
@@ -270,13 +341,39 @@ public class MessageShow : MonoBehaviour
           });
     }
 
-    private IDisposable messageListener;
-
     private class MessageData
     {
         public string FriendName { get; set; }
         public string LatestMessage { get; set; }
         public DateTime Timestamp { get; set; }
         public int ModelNumber { get; set; }
+
+        // Override Equals method to compare MessageData objects
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            MessageData other = (MessageData)obj;
+            return FriendName == other.FriendName &&
+                LatestMessage == other.LatestMessage &&
+                Timestamp == other.Timestamp &&
+                ModelNumber == other.ModelNumber;
+        }
+
+        // Override GetHashCode method
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (FriendName != null ? FriendName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (LatestMessage != null ? LatestMessage.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Timestamp.GetHashCode();
+                hashCode = (hashCode * 397) ^ ModelNumber;
+                return hashCode;
+            }
+        }
     }
 }
