@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class SampleWebView : MonoBehaviour
 {
@@ -11,6 +12,26 @@ public class SampleWebView : MonoBehaviour
     [System.Obsolete]
     IEnumerator Start()
     {
+        // Check and request permissions
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            string[] permissions = {
+                "android.permission.INTERNET",
+                "android.permission.ACCESS_NETWORK_STATE",
+                "android.permission.ACCESS_FINE_LOCATION",
+                "android.permission.ACCESS_COARSE_LOCATION"
+            };
+
+            foreach (string permission in permissions)
+            {
+                if (!Permission.HasUserAuthorizedPermission(permission))
+                {
+                    Permission.RequestUserPermission(permission);
+                    yield return new WaitForSeconds(1);  // Wait for permission dialog
+                }
+            }
+        }
+
         webViewObject = new GameObject("WebViewObject").AddComponent<WebViewObject>();
         webViewObject.Init(
             cb: (msg) =>
@@ -33,10 +54,6 @@ public class SampleWebView : MonoBehaviour
             {
                 Debug.Log(string.Format("CallOnLoaded[{0}]", msg));
 #if UNITY_EDITOR_OSX || !UNITY_ANDROID
-                // NOTE: depending on the situation, you might prefer
-                // the 'iframe' approach.
-                // cf. https://github.com/gree/unity-webview/issues/189
-#if true
                 webViewObject.EvaluateJS(@"
                   if (window && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.unityControl) {
                     window.Unity = {
@@ -57,12 +74,6 @@ public class SampleWebView : MonoBehaviour
                   if (window && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.unityControl) {
                     window.Unity = {
                       call: function(msg) {
-                        window.webkit.messageHandlers.unityControl.postMessage(msg);
-                      }
-                    }
-                  } else {
-                    window.Unity = {
-                      call: function(msg) {
                         var iframe = document.createElement('IFRAME');
                         iframe.setAttribute('src', 'unity:' + msg);
                         document.documentElement.appendChild(iframe);
@@ -72,7 +83,6 @@ public class SampleWebView : MonoBehaviour
                     }
                   }
                 ");
-#endif
 #endif
                 // Add the JavaScript code to override getCurrentPosition method
                 webViewObject.EvaluateJS(@"
