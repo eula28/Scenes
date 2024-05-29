@@ -206,16 +206,28 @@ public class MessageExchangeScript : MonoBehaviour
 
 
     private void InstantiateMessagePrefabs(List<MessageData> messages)
+{
+    foreach (var messageData in messages)
     {
-        foreach (var messageData in messages)
-        {
-            GameObject newMessagePrefab = messageData.IsSentMessage
-                ? Instantiate(sentMessagePrefab, messageContainer)
-                : Instantiate(receivedMessagePrefab, messageContainer);
+        GameObject newMessagePrefab = messageData.IsSentMessage
+            ? Instantiate(sentMessagePrefab, messageContainer)
+            : Instantiate(receivedMessagePrefab, messageContainer);
 
+        RectTransform rectTransform = newMessagePrefab.GetComponent<RectTransform>();
+
+        if (messageData.IsSentMessage)
+        {
+            // Set the sent message alignment to the right
+            rectTransform.anchorMin = new Vector2(1, 0.5f);
+            rectTransform.anchorMax = new Vector2(1, 0.5f);
+            rectTransform.pivot = new Vector2(1, 0.5f);
+            rectTransform.anchoredPosition = new Vector2(-10, rectTransform.anchoredPosition.y); // Adjust position if necessary
+
+            // Align text to the right
             TextMeshProUGUI messageText = newMessagePrefab.transform.Find("Message").GetComponent<TextMeshProUGUI>();
             if (messageText != null)
             {
+                messageText.alignment = TextAlignmentOptions.Right;
                 messageText.text = messageData.Message;
             }
             else
@@ -226,6 +238,38 @@ public class MessageExchangeScript : MonoBehaviour
             TextMeshProUGUI timestampText = newMessagePrefab.transform.Find("Timestamp").GetComponent<TextMeshProUGUI>();
             if (timestampText != null)
             {
+                timestampText.alignment = TextAlignmentOptions.Right;
+                timestampText.text = messageData.Timestamp.ToString();
+            }
+            else
+            {
+                Debug.LogError("Timestamp Text component not found in prefab.");
+            }
+        }
+        else
+        {
+            // Set the received message alignment to the left
+            rectTransform.anchorMin = new Vector2(0, 0.5f);
+            rectTransform.anchorMax = new Vector2(0, 0.5f);
+            rectTransform.pivot = new Vector2(0, 0.5f);
+            rectTransform.anchoredPosition = new Vector2(10, rectTransform.anchoredPosition.y); // Adjust position if necessary
+
+            // Align text to the left
+            TextMeshProUGUI messageText = newMessagePrefab.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            if (messageText != null)
+            {
+                messageText.alignment = TextAlignmentOptions.Left;
+                messageText.text = messageData.Message;
+            }
+            else
+            {
+                Debug.LogError("Message Text component not found in prefab.");
+            }
+
+            TextMeshProUGUI timestampText = newMessagePrefab.transform.Find("Timestamp").GetComponent<TextMeshProUGUI>();
+            if (timestampText != null)
+            {
+                timestampText.alignment = TextAlignmentOptions.Left;
                 timestampText.text = messageData.Timestamp.ToString();
             }
             else
@@ -234,6 +278,8 @@ public class MessageExchangeScript : MonoBehaviour
             }
         }
     }
+}
+
 
     private void StartMessageListener()
     {
