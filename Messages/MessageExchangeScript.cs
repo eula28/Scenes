@@ -17,8 +17,11 @@ public class MessageExchangeScript : MonoBehaviour
     public GameObject receivedMessagePrefab;
     public TMP_Text usernameHead;
     public string friendUsername;
-
     private IDisposable messageListener;
+    private List<MessageData> previousMessages = new List<MessageData>();
+    private bool messagesChanged = false;
+    private float checkInterval = 2f; // Check for changes every 2 seconds
+    private float timer = 0f;
 
     async void Start()
     {
@@ -99,12 +102,6 @@ public class MessageExchangeScript : MonoBehaviour
             return;
         }
 
-        // Clear the message container
-        foreach (Transform child in messageContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
         List<MessageData> messages = new List<MessageData>();
 
         try
@@ -169,21 +166,68 @@ public class MessageExchangeScript : MonoBehaviour
             Debug.LogError("Failed to fetch and populate messages: " + ex);
         }
 
+        if (!MessagesChanged(messages))
+        {
+            // If no changes, exit early without updating UI
+            return;
+        }
+
+        // Update previous messages to current state
+        previousMessages = messages;
+
+        // Clear the message container
+        foreach (Transform child in messageContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
         InstantiateMessagePrefabs(messages);
+    }
+
+    private bool MessagesChanged(List<MessageData> currentMessages)
+    {
+        // If the number of messages is different, return true (changed)
+        if (currentMessages.Count != previousMessages.Count)
+        {
+            return true;
+        }
+
+        // Compare each message in current and previous lists
+        for (int i = 0; i < currentMessages.Count; i++)
+        {
+            if (!currentMessages[i].Equals(previousMessages[i]))
+            {
+                return true; // If any message is different, return true (changed)
+            }
+        }
+
+        return false; // If all messages are the same, return false (not changed)
     }
 
 
     private void InstantiateMessagePrefabs(List<MessageData> messages)
+{
+    foreach (var messageData in messages)
     {
-        foreach (var messageData in messages)
-        {
-            GameObject newMessagePrefab = messageData.IsSentMessage
-                ? Instantiate(sentMessagePrefab, messageContainer)
-                : Instantiate(receivedMessagePrefab, messageContainer);
+        GameObject newMessagePrefab = messageData.IsSentMessage
+            ? Instantiate(sentMessagePrefab, messageContainer)
+            : Instantiate(receivedMessagePrefab, messageContainer);
 
+        RectTransform rectTransform = newMessagePrefab.GetComponent<RectTransform>();
+
+        if (messageData.IsSentMessage)
+        {
+            // Set the sent message alignment to the right
+            rectTransform.anchorMin = new Vector2(1, 0.5f);
+            rectTransform.anchorMax = new Vector2(1, 0.5f);
+            rectTransform.pivot = new Vector2(1, 0.5f);
+            rectTransform.anchoredPosition = new Vector2(-10, rectTransform.anchoredPosition.y); // Adjust position if necessary
+
+            // Align text to the right
             TextMeshProUGUI messageText = newMessagePrefab.transform.Find("Message").GetComponent<TextMeshProUGUI>();
             if (messageText != null)
             {
+                messageText.alignment = TextAlignmentOptions.Right;
                 messageText.text = messageData.Message;
             }
             else
@@ -194,6 +238,38 @@ public class MessageExchangeScript : MonoBehaviour
             TextMeshProUGUI timestampText = newMessagePrefab.transform.Find("Timestamp").GetComponent<TextMeshProUGUI>();
             if (timestampText != null)
             {
+                timestampText.alignment = TextAlignmentOptions.Right;
+                timestampText.text = messageData.Timestamp.ToString();
+            }
+            else
+            {
+                Debug.LogError("Timestamp Text component not found in prefab.");
+            }
+        }
+        else
+        {
+            // Set the received message alignment to the left
+            rectTransform.anchorMin = new Vector2(0, 0.5f);
+            rectTransform.anchorMax = new Vector2(0, 0.5f);
+            rectTransform.pivot = new Vector2(0, 0.5f);
+            rectTransform.anchoredPosition = new Vector2(10, rectTransform.anchoredPosition.y); // Adjust position if necessary
+
+            // Align text to the left
+            TextMeshProUGUI messageText = newMessagePrefab.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            if (messageText != null)
+            {
+                messageText.alignment = TextAlignmentOptions.Left;
+                messageText.text = messageData.Message;
+            }
+            else
+            {
+                Debug.LogError("Message Text component not found in prefab.");
+            }
+
+            TextMeshProUGUI timestampText = newMessagePrefab.transform.Find("Timestamp").GetComponent<TextMeshProUGUI>();
+            if (timestampText != null)
+            {
+                timestampText.alignment = TextAlignmentOptions.Left;
                 timestampText.text = messageData.Timestamp.ToString();
             }
             else
@@ -202,6 +278,8 @@ public class MessageExchangeScript : MonoBehaviour
             }
         }
     }
+}
+
 
     private void StartMessageListener()
     {
@@ -214,10 +292,35 @@ public class MessageExchangeScript : MonoBehaviour
             {
                 // Whenever a new message is received, fetch and populate the messages
                 await FetchLatestMessagesAndPopulate();
+                messagesChanged = true;
             });
     }
 
-    private void OnDisable()
+    void FixedUpdate()
+    {
+        // Check for changes every 2 seconds
+        timer += Time.fixedDeltaTime;
+        if (timer >= checkInterval)
+        {
+            timer = 0f;
+
+            StartMessageListener(); // Check if messages have changed, then fetch and populate
+            Debug.Log("checking");
+            if (messagesChanged)
+            {
+                // Reset the flag
+                messagesChanged = false;
+                // Fetch and populate latest messages
+                if (!string.IsNullOrEmpty(username))
+                {
+                    Debug.Log("fetched");
+                    _ = FetchLatestMessagesAndPopulate();
+                }
+            }
+        }
+    }
+
+        private void OnDisable()
     {
         if (messageListener != null)
         {

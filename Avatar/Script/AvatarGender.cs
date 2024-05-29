@@ -16,8 +16,8 @@ public class AvatarGender : MonoBehaviour
     private Button currentlySelectedButton;
 
     public TextMeshProUGUI Month;
-    public TextMeshProUGUI Date;
-    public TextMeshProUGUI Year;
+    public TMP_InputField Date;
+    public TMP_InputField Year;
     public TextMeshProUGUI gender;
     public Button next;
     // Create a public variable to store the gender value
@@ -26,6 +26,9 @@ public class AvatarGender : MonoBehaviour
     public static int nbtn;
     public string gen;
     public string bday;
+    public string month;
+    public string date;
+    public string year;
     public int modelnum;
 
     // Get a reference to the buttons in the Unity inspector
@@ -55,7 +58,7 @@ public class AvatarGender : MonoBehaviour
     void Update()
     {
         gen = gender.text;
-        bday = Month.text +"/"+ Date.text +"/"+ Year.text;
+        
        
         checkValue();
 
@@ -68,8 +71,13 @@ public class AvatarGender : MonoBehaviour
     }
     void checkValue()
     {
-        if (Month.text != "" && Date.text != "" && Year.text != "" && gen != "" && genderValue != "")
+        month = Month.text;
+        date = Date.text;
+        year = Year.text;
+
+        if (month != "" && date != "" && year != "" && gen != "" && genderValue != "")
         {
+            bday = Month.text + "/" + Date.text + "/" + Year.text;
             next.gameObject.SetActive(true);
 
         }
