@@ -318,7 +318,31 @@ public class FirebaseController : MonoBehaviour
                 CreateFirestoreDocument(result.User.UserId, email, username, "Email and Password");
                 CreateFirestoreDocumentDup(result.User.UserId, username, "Email and Password");
                 // Open profile panel after successful creation
+                FirebaseUser newUser = result.User;
+                SendEmailVerification(newUser);
                 SceneManager.LoadScene("GenderSelection");
+            }
+        });
+    }
+
+    void SendEmailVerification(FirebaseUser user)
+    {
+        user.SendEmailVerificationAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SendEmailVerificationAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
+                return;
+            }
+            else
+            {
+                ShowAlert("Email Verification sent. Check your emails.");
+                Debug.Log("Email verification sent successfully.");
             }
         });
     }
@@ -369,12 +393,31 @@ public class FirebaseController : MonoBehaviour
 
     // Update is called once per frame
     bool isSigned = false;
-    void Update()
+    async Task UpdateAsync()
     {
         if (isSignIn)
         {
             if (!isSigned)
             {
+                string gender_model= "";
+                string bday = "";
+                string gender = "";
+                FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+                string userId = FirebaseController.Instance.auth.CurrentUser.UserId;
+                DocumentReference userDocRef = db.Collection("users").Document(userId);
+
+                DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
+                if (doc.Exists)
+                {
+                    // Access the data from the document
+                    gender_model = doc.GetValue<string>("gender model");
+                    bday = doc.GetValue<string>("bday");
+                    gender = doc.GetValue<string>("gender");
+                }
+                else
+                {
+                    Debug.Log("Document does not exist for user: " + userId);
+                }
                 isSigned = true;
                 user = auth.CurrentUser;
                 string emailCurrent = auth.CurrentUser.Email;
@@ -384,7 +427,14 @@ public class FirebaseController : MonoBehaviour
                 }
                 else
                 {
-                    OpenProfilePanel();
+                    if (gender_model == "" || bday == "" || gender == "")
+                    {
+                        SceneManager.LoadScene("GenderSelection");
+                    }
+                    else 
+                    {
+                        OpenProfilePanel();
+                    }
                 }
             }
         }
