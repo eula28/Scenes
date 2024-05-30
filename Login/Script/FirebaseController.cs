@@ -524,19 +524,19 @@ public class FirebaseController : MonoBehaviour
         System.DateTime currentDateTime = System.DateTime.Now;
         string formattedDateTime = currentDateTime.ToString("MM/dd/yyyy");
         Dictionary<string, object> userDocData = new Dictionary<string, object>
-    {
-        { "email", email },
-        { "username", username },
-        { "user type", type },
-        { "gender model", "" },
-        { "bday", "" },
-        { "gender", "" },
-        { "model number", 0 },
-        { "discoveries", 0 },
-        { "task achieved", 0},
-        { "points", 250},
-        { "date start", formattedDateTime}
-    };
+        {
+            { "email", email },
+            { "username", username },
+            { "user type", type },
+            { "gender model", "" },
+            { "bday", "" },
+            { "gender", "" },
+            { "model number", 0 },
+            { "discoveries", 0 },
+            { "task achieved", 0},
+            { "points", 250},
+            { "date start", formattedDateTime}
+        };
 
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userDocRef = db.Collection("users").Document(userId);
@@ -553,28 +553,28 @@ public class FirebaseController : MonoBehaviour
 
             // Create subcollections for user achievements
             AddMultipleUserAchievements(userId, new List<(string, bool, int, int, int)>
-        {
-            ("Setup", true, 1, 250, 1),
-            ("5Friends", false, 0, 100, 5),
-            ("10Friends", false, 0, 125, 10),
-            ("15Friends", false, 0, 150, 15),
-            ("5AR", false, 0, 100, 5),
-            ("10AR", false, 0, 125, 10),
-            ("15AR", false, 0, 150, 15)
-        });
+            {
+                ("Setup", true, 1, 250, 1),
+                ("5Friends", false, 0, 100, 5),
+                ("10Friends", false, 0, 125, 10),
+                ("15Friends", false, 0, 150, 15),
+                ("5AR", false, 0, 100, 5),
+                ("10AR", false, 0, 125, 10),
+                ("15AR", false, 0, 150, 15)
+            });
 
             // Create subcollections for user targets
             AddMultipleUserTargets(userId, new List<(string, bool)>
-        {
-            ("Juanito Reyes Remulla", false),
-            ("Imus Cathedral Marker", false),
-            ("Imus Cathedral Heritage Bells", false),
-            ("Imus Cathedral", false),
-            ("Imus Plaza Carabao", false),
-            ("Imus Plaza", false),
-            ("Imus Plaza Gen Topacio", false),
-            ("Pillar Lodge No.3", false)
-        });
+            {
+                ("Juanito Reyes Remulla", false),
+                ("Imus Cathedral Marker", false),
+                ("Imus Cathedral Heritage Bells", false),
+                ("Imus Cathedral", false),
+                ("Imus Plaza Carabao", false),
+                ("Imus Plaza", false),
+                ("Imus Plaza Gen Topacio", false),
+                ("Pillar Lodge No.3", false)
+            });
         });
     }
 
