@@ -138,11 +138,11 @@ public class FirestoreFriends : MonoBehaviour
                     await CreateFriendRelationship(db, requesterUsername, receiverUsername);
                     await CreateFriendRelationship(db, receiverUsername, requesterUsername);
                     Dictionary<string, object> userActions = new Dictionary<string, object>
-                {
-                    { "5Friends", 1 },
-                    { "10Friends", 1 },
-                    { "15Friends", 1 }
-                };
+                    {
+                        { "5Friends", 1 },
+                        { "10Friends", 1 },
+                        { "15Friends", 1 }
+                    };
                     // Use the user ID instead of the username
                     await achievementScript.UpdateUserAchievements(requesterUserId, userActions);
                     await achievementScript.UpdateUserAchievements(userId, userActions);

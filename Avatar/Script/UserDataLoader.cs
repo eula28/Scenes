@@ -24,7 +24,7 @@ public class UserDataLoader : MonoBehaviour
     }
 
     // Method to display user data
-    private void DisplayUserData(string email, string username, int discoveries, int task, int landmark, string datestart)
+    private void DisplayUserData(string email, string username, int discoveries, int task, string datestart)
     {
         // Display the data in Unity UI
         profileEmailText.text = email;

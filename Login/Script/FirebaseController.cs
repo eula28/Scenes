@@ -515,7 +515,7 @@ public class FirebaseController : MonoBehaviour
             }
 
             Debug.Log("Firestore document created successfully for user: " + userId);
-            });
+        });
     }
 
     // Create Firestore Document for User
@@ -534,7 +534,6 @@ public class FirebaseController : MonoBehaviour
             { "model number", 0 },
             { "discoveries", 0 },
             { "task achieved", 0},
-            { "landmark visited", 0},
             { "points", 250},
             { "date start", formattedDateTime}
         };
@@ -551,16 +550,30 @@ public class FirebaseController : MonoBehaviour
             }
 
             Debug.Log("Firestore document created successfully for user: " + userId);
-           //make subcollection for user achievements
-           AddMultipleUserAchievements(userId, new List<(string, bool, int, int, int)>
+
+            // Create subcollections for user achievements
+            AddMultipleUserAchievements(userId, new List<(string, bool, int, int, int)>
             {
-                ("Setup", true, 1, 200, 1),
+                ("Setup", true, 1, 250, 1),
                 ("5Friends", false, 0, 100, 5),
                 ("10Friends", false, 0, 125, 10),
-                ("15Friends",false,0, 150, 15),
+                ("15Friends", false, 0, 150, 15),
                 ("5AR", false, 0, 100, 5),
                 ("10AR", false, 0, 125, 10),
-                ("15AR",false, 0, 150, 15)
+                ("15AR", false, 0, 150, 15)
+            });
+
+            // Create subcollections for user targets
+            AddMultipleUserTargets(userId, new List<(string, bool)>
+            {
+                ("Juanito Reyes Remulla", false),
+                ("Imus Cathedral Marker", false),
+                ("Imus Cathedral Heritage Bells", false),
+                ("Imus Cathedral", false),
+                ("Imus Plaza Carabao", false),
+                ("Imus Plaza", false),
+                ("Imus Plaza Gen Topacio", false),
+                ("Pillar Lodge No.3", false)
             });
         });
     }
@@ -573,12 +586,12 @@ public class FirebaseController : MonoBehaviour
         foreach (var achievement in achievements)
         {
             Dictionary<string, object> userAchievementData = new Dictionary<string, object>
-            {
-                { "achieved", achievement.achieved },
-                { "progress", achievement.progress },
-                { "points", achievement.points},
-                { "criteria", achievement.criteria}
-            };
+        {
+            { "achieved", achievement.achieved },
+            { "progress", achievement.progress },
+            { "points", achievement.points },
+            { "criteria", achievement.criteria }
+        };
 
             DocumentReference userAchievementDocRef = db.Collection("users").Document(userId).Collection("userAchievements").Document(achievement.achievementId);
             batch.Set(userAchievementDocRef, userAchievementData);
@@ -593,6 +606,34 @@ public class FirebaseController : MonoBehaviour
             }
 
             Debug.Log("User achievement documents created successfully for user: " + userId);
+        });
+    }
+
+    public void AddMultipleUserTargets(string userId, List<(string targetId, bool targetFound)> targets)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        WriteBatch batch = db.StartBatch();
+
+        foreach (var target in targets)
+        {
+            Dictionary<string, object> userTargetData = new Dictionary<string, object>
+        {
+            { "target found", target.targetFound }
+        };
+
+            DocumentReference userTargetDocRef = db.Collection("users").Document(userId).Collection("userTargets").Document(target.targetId);
+            batch.Set(userTargetDocRef, userTargetData);
+        }
+
+        batch.CommitAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Failed to create user target documents: " + task.Exception);
+                return;
+            }
+
+            Debug.Log("User target documents created successfully for user: " + userId);
         });
     }
 
@@ -641,7 +682,7 @@ public class FirebaseController : MonoBehaviour
     }
 
     // Retrieve User Data from Firestore
-    public async void GetUserData(string userId, Action<string, string, int, int, int, string> callback)
+    public async void GetUserData(string userId, Action<string, string, int, int, string> callback)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userDocRef = db.Collection("users").Document(userId);
@@ -654,11 +695,10 @@ public class FirebaseController : MonoBehaviour
             string username = doc.GetValue<string>("username");
             int discoveries = doc.GetValue<int>("discoveries");
             int task = doc.GetValue<int>("task achieved");
-            int landmark = doc.GetValue<int>("landmark visited");
             string datestart = doc.GetValue<string>("date start");
 
             // Pass the data to the callback function
-            callback(email, username, discoveries, task, landmark, datestart);
+            callback(email, username, discoveries, task, datestart);
         }
         else
         {
