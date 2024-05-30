@@ -43,7 +43,8 @@ public class AchievementScript
                         int points = achievementData.ContainsKey("points") ? Convert.ToInt32(achievementData["points"]) : 0;
                         await db.Collection("users").Document(userId).UpdateAsync(new Dictionary<string, object>
                         {
-                            { "points", FieldValue.Increment(points) }
+                            { "points", FieldValue.Increment(points) },
+                            { "task achieved", FieldValue.Increment(1)}
                         });
                     }
 
