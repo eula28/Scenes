@@ -318,7 +318,31 @@ public class FirebaseController : MonoBehaviour
                 CreateFirestoreDocument(result.User.UserId, email, username, "Email and Password");
                 CreateFirestoreDocumentDup(result.User.UserId, username, "Email and Password");
                 // Open profile panel after successful creation
+                FirebaseUser newUser = result.User;
+                SendEmailVerification(newUser);
                 SceneManager.LoadScene("GenderSelection");
+            }
+        });
+    }
+
+    void SendEmailVerification(FirebaseUser user)
+    {
+        user.SendEmailVerificationAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SendEmailVerificationAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
+                return;
+            }
+            else
+            {
+                ShowAlert("Email Verification sent. Check your emails.");
+                Debug.Log("Email verification sent successfully.");
             }
         });
     }
@@ -355,14 +379,6 @@ public class FirebaseController : MonoBehaviour
                 Firebase.Auth.AuthResult result = task.Result;
                 Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
                 // Open profile panel after successful sign-in
-                if(email == "cityofimustourism@gmail.com")
-                {
-                    SceneManager.LoadScene("Admin");
-                }
-                else
-                {
-                    OpenProfilePanel();
-                }
             }
         });
     }
