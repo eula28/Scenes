@@ -393,7 +393,7 @@ public class FirebaseController : MonoBehaviour
 
     // Update is called once per frame
     bool isSigned = false;
-    async Task UpdateAsync()
+    async void Update()
     {
         if (isSignIn)
         {
