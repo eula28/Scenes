@@ -9,6 +9,7 @@ public class EmailVerificationCheck : MonoBehaviour
     private FirebaseAuth auth;
     private FirebaseUser user;
     public GameObject AlertPanel;
+    public MeshRenderer art3d;
 
     void Start()
     {
@@ -38,8 +39,17 @@ public class EmailVerificationCheck : MonoBehaviour
             }
             else
             {
+
                 Debug.Log("User is signed in but email is not verified.");
                 SendEmailVerification(user);
+                // Destroy all previous children (previously instantiated models)
+                foreach (Transform child in transform)
+                {
+                    Destroy(child.gameObject);
+                }
+                // If art3d is a MeshRenderer
+                art3d.gameObject.SetActive(false);
+
                 AlertPanel.SetActive(true);
                 Application.Quit();
             }
