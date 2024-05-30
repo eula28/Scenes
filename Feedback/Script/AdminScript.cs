@@ -155,11 +155,50 @@ public class AdminScript : MonoBehaviour
         int rating4Count = ratingCounts.ContainsKey(4) ? ratingCounts[4] : 0;
         int rating5Count = ratingCounts.ContainsKey(5) ? ratingCounts[5] : 0;
 
-        rating1.text = rating1Count.ToString();
-        rating2.text = rating2Count.ToString();
-        rating3.text = rating3Count.ToString();
-        rating4.text = rating4Count.ToString();
-        rating5.text = rating5Count.ToString();
+        if (rating1 != null)
+        {
+            rating1.text = rating1Count.ToString();
+        }
+        else
+        {
+            Debug.LogError("rating1 is not assigned.");
+        }
+
+        if (rating2 != null)
+        {
+            rating2.text = rating2Count.ToString();
+        }
+        else
+        {
+            Debug.LogError("rating2 is not assigned.");
+        }
+
+        if (rating3 != null)
+        {
+            rating3.text = rating3Count.ToString();
+        }
+        else
+        {
+            Debug.LogError("rating3 is not assigned.");
+        }
+
+        if (rating4 != null)
+        {
+            rating4.text = rating4Count.ToString();
+        }
+        else
+        {
+            Debug.LogError("rating4 is not assigned.");
+        }
+
+        if (rating5 != null)
+        {
+            rating5.text = rating5Count.ToString();
+        }
+        else
+        {
+            Debug.LogError("rating5 is not assigned.");
+        }
 
         Debug.Log($"Rating 1: {rating1Count}");
         Debug.Log($"Rating 2: {rating2Count}");
@@ -169,7 +208,13 @@ public class AdminScript : MonoBehaviour
 
         float[] values = new float[] { rating1Count, rating2Count, rating3Count, rating4Count, rating5Count };
 
-        GetComponent<PieChart>().SetValues(values);
-
+        if (piechart != null)
+        {
+            piechart.SetValues(values);
+        }
+        else
+        {
+            Debug.LogError("piechart is not assigned.");
+        }
     }
 }
