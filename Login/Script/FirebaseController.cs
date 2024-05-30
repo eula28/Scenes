@@ -355,7 +355,14 @@ public class FirebaseController : MonoBehaviour
                 Firebase.Auth.AuthResult result = task.Result;
                 Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
                 // Open profile panel after successful sign-in
-                OpenProfilePanel();
+                if(email == "cityofimustourism@gmail.com")
+                {
+                    SceneManager.LoadScene("Admin");
+                }
+                else
+                {
+                    OpenProfilePanel();
+                }
             }
         });
     }
@@ -370,7 +377,15 @@ public class FirebaseController : MonoBehaviour
             {
                 isSigned = true;
                 user = auth.CurrentUser;
-                OpenProfilePanel();
+                string emailCurrent = auth.CurrentUser.Email;
+                if (emailCurrent == "cityofimustourism@gmail.com")
+                {
+                    SceneManager.LoadScene("Admin");
+                }
+                else
+                {
+                    OpenProfilePanel();
+                }
             }
         }
     }
