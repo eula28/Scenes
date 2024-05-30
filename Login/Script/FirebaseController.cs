@@ -146,7 +146,7 @@ public class FirebaseController : MonoBehaviour
     public void LogInUser()
     {
         // Check if login fields are empty
-        if (string.IsNullOrEmpty(loginEmail.text) && string.IsNullOrEmpty(loginPassword.text))
+        if (string.IsNullOrEmpty(loginEmail.text) || string.IsNullOrEmpty(loginPassword.text))
         {
             ShowAlert("Kindly fill out all required fields.");
             return;
@@ -162,7 +162,7 @@ public class FirebaseController : MonoBehaviour
     public async void SignUpUser()
     {
         // Check if sign up fields are empty
-        if (string.IsNullOrEmpty(signupUsername.text) && string.IsNullOrEmpty(signupEmail.text) && string.IsNullOrEmpty(signupPassword.text) && string.IsNullOrEmpty(signupConfirmPass.text))
+        if (string.IsNullOrEmpty(signupUsername.text) || string.IsNullOrEmpty(signupEmail.text) || string.IsNullOrEmpty(signupPassword.text) || string.IsNullOrEmpty(signupConfirmPass.text))
         {
             ShowAlert("Kindly fill out all required fields.");
             return;
@@ -533,7 +533,7 @@ public class FirebaseController : MonoBehaviour
             { "gender", "" },
             { "model number", 0 },
             { "discoveries", 0 },
-            { "task achieved", 0},
+            { "task achieved", 1},
             { "points", 250},
             { "date start", formattedDateTime}
         };
