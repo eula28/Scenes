@@ -1552,13 +1552,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Month: {fileID: 1114322702}
-  Date: {fileID: 605804106}
-  Year: {fileID: 1301719119}
+  Date: {fileID: 717958406}
+  Year: {fileID: 1995982412}
   gender: {fileID: 361076189}
   next: {fileID: 1601115276}
   genderValue: 
   gen: 
   bday: 
+  month: 
+  date: 
+  year: 
   modelnum: 0
   maleButton: {fileID: 1550687193}
   femaleButton: {fileID: 2078291071}
@@ -2082,7 +2085,7 @@ GameObject:
   - component: {fileID: 717958407}
   - component: {fileID: 717958406}
   m_Layer: 5
-  m_Name: InputField (TMP)
+  m_Name: Day text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5806,7 +5809,7 @@ GameObject:
   - component: {fileID: 1995982413}
   - component: {fileID: 1995982412}
   m_Layer: 5
-  m_Name: InputField (TMP)
+  m_Name: Year text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
