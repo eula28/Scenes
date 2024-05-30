@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1321876, g: 0.1412888, b: 0.13132481, a: 1}
+  m_IndirectSpecularColor: {r: 0.1321872, g: 0.14128868, b: 0.1313247, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1578,7 +1578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &839370914
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2303,8 +2303,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 'Email not verified.
-
-    Email Verification sent.
 
     Check you emails.'
   m_isRightToLeft: 0
@@ -3090,7 +3088,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1259609998}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 499615325}
+        m_TargetAssemblyTypeName: EmailVerificationCheck, Assembly-CSharp
+        m_MethodName: QuitApp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1259609998
 MonoBehaviour:
   m_ObjectHideFlags: 0

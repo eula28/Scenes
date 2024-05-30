@@ -1,6 +1,8 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Extensions;
+using Firebase.Firestore;
+using Google;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,7 +30,7 @@ public class EmailVerificationCheck : MonoBehaviour
         });
     }
 
-    void CheckUserSignInStatus()
+    async void CheckUserSignInStatus()
     {
         user = auth.CurrentUser;
         if (user != null)
@@ -36,12 +38,34 @@ public class EmailVerificationCheck : MonoBehaviour
             if (user.IsEmailVerified)
             {
                 Debug.Log("User is signed in and email is verified.");
+                string gender_model = "";
+                string bday = "";
+                string gender = "";
+                FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+                string userId = FirebaseController.Instance.auth.CurrentUser.UserId;
+                DocumentReference userDocRef = db.Collection("users").Document(userId);
+
+                DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
+                if (doc.Exists)
+                {
+                    // Access the data from the document
+                    gender_model = doc.GetValue<string>("gender model");
+                    bday = doc.GetValue<string>("bday");
+                    gender = doc.GetValue<string>("gender");
+                }
+                else
+                {
+                    Debug.Log("Document does not exist for user: " + userId);
+                }
+                if (gender_model == "" || bday == "" || gender == "")
+                {
+                    SceneManager.LoadScene("GenderSelection");
+                }
             }
             else
             {
 
                 Debug.Log("User is signed in but email is not verified.");
-                SendEmailVerification(user);
                 // Destroy all previous children (previously instantiated models)
                 foreach (Transform child in transform)
                 {
@@ -49,36 +73,33 @@ public class EmailVerificationCheck : MonoBehaviour
                 }
                 // If art3d is a MeshRenderer
                 art3d.gameObject.SetActive(false);
-
                 AlertPanel.SetActive(true);
-                Application.Quit();
             }
         }
         else
         {
             Debug.Log("No user is signed in.");
+            LogOut();
             SceneManager.LoadScene("Welcome-Screen");
         }
     }
 
-    void SendEmailVerification(FirebaseUser user)
+    public void QuitApp()
     {
-        user.SendEmailVerificationAsync().ContinueWithOnMainThread(task =>
+        LogOut();
+        Application.Quit();
+    }
+
+    public void LogOut()
+    {
+        // Sign out Firebase and Google users
+        if (auth != null && auth.CurrentUser != null)
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SendEmailVerificationAsync was canceled.");
-                return;
-            }
-            if (task.IsFaulted)
-            {
-                Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
-                return;
-            }
-            else
-            {
-                Debug.Log("Email verification sent successfully.");
-            }
-        });
+            auth.SignOut();
+        }
+        if (GoogleSignIn.DefaultInstance != null)
+        {
+            GoogleSignIn.DefaultInstance.SignOut();
+        }
     }
 }

@@ -379,45 +379,18 @@ public class FirebaseController : MonoBehaviour
                 Firebase.Auth.AuthResult result = task.Result;
                 Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
                 // Open profile panel after successful sign-in
-                if(email == "cityofimustourism@gmail.com")
-                {
-                    SceneManager.LoadScene("Admin");
-                }
-                else
-                {
-                    OpenProfilePanel();
-                }
             }
         });
     }
 
     // Update is called once per frame
     bool isSigned = false;
-    async void Update()
+    void Update()
     {
         if (isSignIn)
         {
             if (!isSigned)
             {
-                string gender_model= "";
-                string bday = "";
-                string gender = "";
-                FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-                string userId = FirebaseController.Instance.auth.CurrentUser.UserId;
-                DocumentReference userDocRef = db.Collection("users").Document(userId);
-
-                DocumentSnapshot doc = await userDocRef.GetSnapshotAsync();
-                if (doc.Exists)
-                {
-                    // Access the data from the document
-                    gender_model = doc.GetValue<string>("gender model");
-                    bday = doc.GetValue<string>("bday");
-                    gender = doc.GetValue<string>("gender");
-                }
-                else
-                {
-                    Debug.Log("Document does not exist for user: " + userId);
-                }
                 isSigned = true;
                 user = auth.CurrentUser;
                 string emailCurrent = auth.CurrentUser.Email;
@@ -427,14 +400,7 @@ public class FirebaseController : MonoBehaviour
                 }
                 else
                 {
-                    if (gender_model == "" || bday == "" || gender == "")
-                    {
-                        SceneManager.LoadScene("GenderSelection");
-                    }
-                    else 
-                    {
-                        OpenProfilePanel();
-                    }
+                    OpenProfilePanel();
                 }
             }
         }
