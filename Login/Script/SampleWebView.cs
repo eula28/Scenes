@@ -97,7 +97,7 @@ public class SampleWebView : MonoBehaviour
             },
             enableWKWebView: true);
         
-        webViewObject.SetMargins(2, 0, 2, Screen.height / 7);
+        webViewObject.SetMargins(2, 0, 2, Screen.height / 9);
         webViewObject.SetVisibility(true);
 
 #if !UNITY_WEBPLAYER

@@ -7,7 +7,6 @@ public class UserDataLoader : MonoBehaviour
     public TMP_Text profileUsernameText;
     public TMP_Text profileDiscoveriesText;
     public TMP_Text profileTaskText;
-    public TMP_Text profileLandmarkText;
     public TMP_Text profileDateStartText;
 
     private void Start()
@@ -32,7 +31,6 @@ public class UserDataLoader : MonoBehaviour
         profileUsernameText.text = username;
         profileDiscoveriesText.text = discoveries.ToString();
         profileTaskText.text = task.ToString();
-        profileLandmarkText.text = landmark.ToString();
         profileDateStartText.text = datestart;
     }
 }
