@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1321872, g: 0.14128868, b: 0.1313247, a: 1}
+  m_IndirectSpecularColor: {r: 0.1321876, g: 0.1412888, b: 0.13132481, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1947,7 +1947,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: sample@gmail.com
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5ff2847afb1ca74d9e00ceeda67f283, type: 2}
   m_sharedMaterial: {fileID: -3488958872866268455, guid: c5ff2847afb1ca74d9e00ceeda67f283,
@@ -1975,7 +1975,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 68
+  m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5163,7 +5163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sample
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5ff2847afb1ca74d9e00ceeda67f283, type: 2}
   m_sharedMaterial: {fileID: -3488958872866268455, guid: c5ff2847afb1ca74d9e00ceeda67f283,
