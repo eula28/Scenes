@@ -378,7 +378,6 @@ public class FirebaseController : MonoBehaviour
                 // Sign-in successful
                 Firebase.Auth.AuthResult result = task.Result;
                 Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
-                // Open profile panel after successful sign-in
             }
         });
     }
@@ -713,7 +712,7 @@ public class FirebaseController : MonoBehaviour
     }
 
     // Retrieve User Data from Firestore
-    public async void GetUserData(string userId, Action<string, string, int, int, string> callback)
+    public async void GetUserData(string userId, Action<string, string, int, int, string, string, string, string> callback)
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
         DocumentReference userDocRef = db.Collection("users").Document(userId);
@@ -727,9 +726,12 @@ public class FirebaseController : MonoBehaviour
             int discoveries = doc.GetValue<int>("discoveries");
             int task = doc.GetValue<int>("task achieved");
             string datestart = doc.GetValue<string>("date start");
+            string gender_model = doc.GetValue<string>("gender model");
+            string bday = doc.GetValue<string>("bday");
+            string gender = doc.GetValue<string>("gender");
 
             // Pass the data to the callback function
-            callback(email, username, discoveries, task, datestart);
+            callback(email, username, discoveries, task, datestart, gender_model, bday, gender);
         }
         else
         {
