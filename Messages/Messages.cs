@@ -45,10 +45,21 @@ public class Messages : MonoBehaviour
         string docId = sender + "_" + receiver;
         DocumentReference messageRef = db.Collection("messages").Document(docId);
 
-        // Get the current time in UTC and convert it to Philippine time (UTC+8)
         DateTime utcNow = DateTime.UtcNow;
-        TimeZoneInfo phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
-        DateTime phTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, phTimeZone);
+        DateTime phTime;
+
+        try
+        {
+            // Attempt to find the Philippine time zone
+            TimeZoneInfo phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+            phTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, phTimeZone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            // If the time zone is not found, create a manual time zone with an 8-hour offset from UTC
+            TimeSpan offset = new TimeSpan(8, 0, 0);
+            phTime = utcNow.Add(offset);
+        }
 
         // Create a Firestore Timestamp from the DateTime
         Timestamp phTimestamp = Timestamp.FromDateTime(phTime);
