@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -14,12 +15,21 @@ public class CharacterManager : MonoBehaviour
     private int selectedOption;
     private string gender;
     private bool isDataLoaded = false;
+    string userId;
+    int user = 0;
+    public Button save;
+
+    public TextMeshProUGUI userPointsText;
+    public TextMeshProUGUI TaskNeeded;
+    public Image TaskBg;
 
     void Start()
     {
         if (FirebaseController.Instance != null)
         {
             FirebaseController.Instance.GetUserModelGender(FirebaseController.Instance.user.UserId, DisplayUserModelGender);
+            userId = FirebaseController.Instance.user.UserId;
+            DisplayUserAchievements(userId);
         }
         else
         {
@@ -28,7 +38,7 @@ public class CharacterManager : MonoBehaviour
 
         StartCoroutine(InitializeCharacter());
     }
-
+    
     private IEnumerator InitializeCharacter()
     {
         // Destroy all previous children (previously instantiated models)
@@ -40,12 +50,50 @@ public class CharacterManager : MonoBehaviour
         Debug.Log("Data loaded from Firebase.");
         UpdateCharacter(selectedOption);
     }
+    
+    void DisplayUserAchievements(string userId)
+    {
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        DocumentReference userRef = db.Collection("users").Document(userId);
+
+        userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Failed to fetch user data: " + task.Exception);
+                return;
+            }
+
+            DocumentSnapshot userSnapshot = task.Result;
+            if (!userSnapshot.Exists)
+            {
+                Debug.LogWarning("User not found.");
+                return;
+            }
+
+            int userPoints = userSnapshot.GetValue<int>("points");
+            Debug.Log("Checked1.");
+            UpdateUserPointsUI(userPoints);
+
+
+        });
+    }
+    void UpdateUserPointsUI(int userPoints)
+    {
+        userPointsText.text = userPoints.ToString();
+        user = userPoints;
+        Debug.Log("Checked:P.");
+    }
 
     public void NextOption()
     {
         selectedOption++;
         UpdateSelectedOption();
         UpdateCharacter(selectedOption);
+
+        AvatarUnlocked();
+
+        
     }
 
     public void BackOption()
@@ -53,6 +101,166 @@ public class CharacterManager : MonoBehaviour
         selectedOption--;
         UpdateSelectedOption();
         UpdateCharacter(selectedOption);
+        AvatarUnlocked();
+    }
+
+    public void AvatarUnlocked()
+    {
+        if (gender == "Male-Avatar")
+        {
+            if (selectedOption == 1)
+            {
+                if (user >= 350)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 300 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 2)
+            {
+                if (user >= 400)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 400 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 3)
+            {
+                if (user >= 450)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 450 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 4)
+            {
+                if (user >= 500)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 500 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else
+            {
+                TaskBg.gameObject.SetActive(false);
+                save.interactable = true;
+                TaskNeeded.text = "".ToString();
+            }
+
+        }
+  
+        else if (gender == "Female-Avatar")
+        {
+            if (selectedOption == 6)
+            {
+                if (user >= 350)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 300 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 7)
+            {
+                if (user >= 400)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 400 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 8)
+            {
+                if (user >= 450)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 450 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 8)
+            {
+                if (user >= 500)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 500 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else if (selectedOption == 9)
+            {
+                if (user >= 550)
+                {
+                    save.interactable = true;
+                }
+                else
+                {
+                    TaskBg.gameObject.SetActive(true);
+                    TaskNeeded.text = "Earn 550 points to get this Avatar".ToString();
+                    save.interactable = false;
+                    Debug.Log("Selected Option " + selectedOption);
+                }
+
+            }
+            else
+            {
+                TaskBg.gameObject.SetActive(false);
+                save.interactable = true;
+                TaskNeeded.text = "".ToString();
+            }
+        }
     }
 
     private void UpdateSelectedOption()
@@ -158,4 +366,5 @@ public class CharacterManager : MonoBehaviour
             Debug.LogError("FirebaseController instance not found.");
         }
     }
+
 }
