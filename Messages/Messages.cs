@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using Firebase.Extensions;
 using Firebase.Firestore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -43,12 +44,21 @@ public class Messages : MonoBehaviour
         string sender = username;
         string docId = sender + "_" + receiver;
         DocumentReference messageRef = db.Collection("messages").Document(docId);
+
+        // Get the current time in UTC and convert it to Philippine time (UTC+8)
+        DateTime utcNow = DateTime.UtcNow;
+        TimeZoneInfo phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+        DateTime phTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, phTimeZone);
+
+        // Create a Firestore Timestamp from the DateTime
+        Timestamp phTimestamp = Timestamp.FromDateTime(phTime);
+
         Dictionary<string, object> messageData = new Dictionary<string, object>
         {
             { "sender", sender },
             { "receiver", receiver},
             { "message", message.text },
-            { "timestamp", Timestamp.GetCurrentTimestamp() }
+            { "timestamp", phTimestamp }
         };
         messageRef.SetAsync(messageData).ContinueWithOnMainThread(task =>
         {

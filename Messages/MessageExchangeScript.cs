@@ -66,12 +66,21 @@ public class MessageExchangeScript : MonoBehaviour
         string sender = username;
         string docId = Guid.NewGuid().ToString();
         DocumentReference messageRef = db.Collection("messages").Document(docId);
+
+        // Get the current time in UTC and convert it to Philippine time (UTC+8)
+        DateTime utcNow = DateTime.UtcNow;
+        TimeZoneInfo phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+        DateTime phTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, phTimeZone);
+
+        // Create a Firestore Timestamp from the DateTime
+        Timestamp phTimestamp = Timestamp.FromDateTime(phTime);
+
         Dictionary<string, object> messageData = new Dictionary<string, object>
         {
             { "sender", sender },
             { "receiver", friendUsername},
             { "message", message.text },
-            { "timestamp", Timestamp.GetCurrentTimestamp() }
+            { "timestamp", phTimestamp }
         };
         messageRef.SetAsync(messageData).ContinueWithOnMainThread(task =>
         {
