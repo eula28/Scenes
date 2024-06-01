@@ -112,7 +112,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 350)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -127,7 +127,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 400)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -142,7 +142,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 450)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -157,7 +157,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 500)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -170,9 +170,7 @@ public class CharacterManager : MonoBehaviour
             }
             else
             {
-                TaskBg.gameObject.SetActive(false);
-                save.interactable = true;
-                TaskNeeded.text = "".ToString();
+                Unlocked();
             }
 
         }
@@ -183,7 +181,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 350)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -198,7 +196,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 400)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -213,7 +211,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 450)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -228,7 +226,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 500)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -243,7 +241,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (user >= 550)
                 {
-                    save.interactable = true;
+                    Unlocked();
                 }
                 else
                 {
@@ -261,6 +259,12 @@ public class CharacterManager : MonoBehaviour
                 TaskNeeded.text = "".ToString();
             }
         }
+    }
+    public void Unlocked()
+    {
+        TaskBg.gameObject.SetActive(false);
+        save.interactable = true;
+        TaskNeeded.text = "".ToString();
     }
 
     private void UpdateSelectedOption()
