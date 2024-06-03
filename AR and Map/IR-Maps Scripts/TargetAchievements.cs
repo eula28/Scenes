@@ -1,5 +1,6 @@
 using Firebase.Extensions;
 using Firebase.Firestore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -52,7 +53,7 @@ public class TargetAchievements : MonoBehaviour
             };
             DocumentReference userUpdateDocRef = db.Collection("users").Document(userId).Collection("userTargets").Document(targetname);
 
-            userUpdateDocRef.UpdateAsync(userTarget).ContinueWithOnMainThread(task =>
+            userUpdateDocRef.UpdateAsync(userTarget).ContinueWithOnMainThread(async task =>
             {
                 if (task.IsFaulted)
                 {
@@ -62,6 +63,23 @@ public class TargetAchievements : MonoBehaviour
                 else
                 {
                     Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
+
+                    // Increment the discoveries field in the users collection
+                    DocumentReference userDocRef = db.Collection("users").Document(userId);
+                    Dictionary<string, object> updates = new Dictionary<string, object>
+                    {
+                        { "discoveries", FieldValue.Increment(1) }
+                    };
+
+                    try
+                    {
+                        await userDocRef.UpdateAsync(updates);
+                        Debug.Log("Discoveries field incremented successfully.");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Failed to increment discoveries field: " + e.Message);
+                    }
                 }
             });
         }
@@ -70,6 +88,7 @@ public class TargetAchievements : MonoBehaviour
             Debug.LogError("FirebaseController instance not found.");
         }
     }
+
 
     public async void Juanito()
     {
