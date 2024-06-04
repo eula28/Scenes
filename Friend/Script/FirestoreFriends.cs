@@ -477,7 +477,17 @@ public class FirestoreFriends : MonoBehaviour
                 {
                     friendItem.name = friendUsername;
                     friendItem.transform.localScale = Vector3.one; // Ensure the scale is (1, 1, 1)
-                    string targetsText = friendUsername + " discovered the following:\n" + string.Join(", ", targetDocumentNames);
+
+                    string targetsText;
+                    if (targetDocumentNames != null && targetDocumentNames.Count > 0)
+                    {
+                        targetsText = friendUsername + " discovered the following in Imus City:\n" + string.Join(", ", targetDocumentNames);
+                    }
+                    else
+                    {
+                        targetsText = friendUsername + " has not discovered anything yet in Imus City.";
+                    }
+
                     RectTransform rectTransform = friendItem.GetComponent<RectTransform>();
                     rectTransform.sizeDelta = new Vector2(200, 50); // Set to desired size
                     TMP_Text[] textFields = friendItem.GetComponentsInChildren<TMP_Text>();
