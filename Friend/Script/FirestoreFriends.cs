@@ -274,7 +274,41 @@ public class FirestoreFriends : MonoBehaviour
                 foreach (DocumentSnapshot document in documents)
                 {
                     string requesterUsername = document.GetValue<string>("requester");
-                    AddFriendToUI(friendRequestsListParent, requesterUsername, "request");
+
+                    // Get the userId based on the username
+                    var userQuerySnapshot = await db.Collection("users")
+                        .WhereEqualTo("username", requesterUsername)
+                        .Limit(1)
+                        .GetSnapshotAsync();
+
+                    var userDocument = userQuerySnapshot.Documents.FirstOrDefault();
+
+                    if (userDocument != null)
+                    {
+                        string requesterUserId = userDocument.Id;
+
+                        // Get requester's userTargets collection where 'target found' is true
+                        var userTargetsSnapshot = await db.Collection("users")
+                            .Document(requesterUserId)
+                            .Collection("userTargets")
+                            .WhereEqualTo("target found", true)
+                            .GetSnapshotAsync();
+
+                        // Build the list of target document names
+                        List<string> targetDocumentNames = new List<string>();
+                        foreach (DocumentSnapshot targetDocument in userTargetsSnapshot.Documents)
+                        {
+                            string targetDocumentName = targetDocument.Id;
+                            targetDocumentNames.Add(targetDocumentName);
+                        }
+
+                        // Add friend to UI with targetDocumentNames
+                        AddFriendToUI(friendRequestsListParent, requesterUsername, "request", targetDocumentNames);
+                    }
+                    else
+                    {
+                        Debug.LogError("User not found for username: " + requesterUsername);
+                    }
                 }
             }
             catch (Exception ex)
@@ -309,22 +343,16 @@ public class FirestoreFriends : MonoBehaviour
                 if (prefabType == "friend")
                 {
                     friendItem = Instantiate(friendPrefab, parent);
-                }
-                else if (prefabType == "request")
-                {
-                    friendItem = Instantiate(requestPrefab, parent);
-                    Button acceptButton = friendItem.transform.Find("AcceptButton")?.GetComponent<Button>();
-                    Button rejectButton = friendItem.transform.Find("RejectButton")?.GetComponent<Button>();
+                    Button friendButton = friendItem.GetComponent<Button>();
 
-                    if (acceptButton != null)
-                        acceptButton.onClick.AddListener(() => AcceptFriendRequest(friendUsername));
+                    if (friendButton != null)
+                    {
+                        friendButton.onClick.AddListener(() => OpenUserAchievementScene(userDocument.Id));
+                    }
                     else
-                        Debug.LogError("AcceptButton not found in requestPrefab.");
-
-                    if (rejectButton != null)
-                        rejectButton.onClick.AddListener(() => RejectFriendRequest(friendUsername));
-                    else
-                        Debug.LogError("RejectButton not found in requestPrefab.");
+                    {
+                        Debug.LogError("Button component not found in friendPrefab.");
+                    }
                 }
                 else if (prefabType == "search")
                 {
@@ -345,6 +373,7 @@ public class FirestoreFriends : MonoBehaviour
                     rectTransform.sizeDelta = new Vector2(200, 50); // Set to desired size
                     TMP_Text[] textFields = friendItem.GetComponentsInChildren<TMP_Text>();
                     Image[] profileImageComponents = friendItem.GetComponentsInChildren<Image>();
+
                     // Handle different prefab types with different numbers of TMP_Text components
                     if (prefabType == "friend" && textFields.Length >= 2)
                     {
@@ -356,32 +385,6 @@ public class FirestoreFriends : MonoBehaviour
                         if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
                         {
                             Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
-                           
-
-                            if (profileImageComponents != null && profileImageComponents.Length > 0)
-                            {
-                                // Assuming we want the first Image component found
-                                Image profileImageComponent = profileImageComponents[2];
-
-                                if (profileImageComponent != null)
-                                {
-                                    profileImageComponent.sprite = profileSprite;
-                                }
-                            }
-                        }
-
-
-                    }
-                    else if (prefabType == "request" && textFields.Length >= 1)
-                    {
-                        textFields[0].text = friendUsername;
-                        // add profile picture using modelNumber
-
-                        // Add profile picture using modelNumber
-                        if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
-                        {
-                            Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
-
 
                             if (profileImageComponents != null && profileImageComponents.Length > 0)
                             {
@@ -403,7 +406,6 @@ public class FirestoreFriends : MonoBehaviour
                         if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
                         {
                             Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
-
 
                             if (profileImageComponents != null && profileImageComponents.Length > 0)
                             {
@@ -431,6 +433,92 @@ public class FirestoreFriends : MonoBehaviour
             }
         });
     }
+
+    void AddFriendToUI(Transform parent, string friendUsername, string prefabType, List<string> targetDocumentNames)
+    {
+        PerformFirestoreOperation(async (db, currentUsername) =>
+        {
+            try
+            {
+                var querySnapshot = await db.Collection("users")
+                    .WhereEqualTo("username", friendUsername)
+                    .GetSnapshotAsync();
+
+                if (!querySnapshot.Documents.Any())
+                {
+                    Debug.LogError("User document not found for username: " + friendUsername);
+                    return;
+                }
+
+                DocumentSnapshot userDocument = querySnapshot.Documents.FirstOrDefault();
+                int modelNumber = userDocument.GetValue<int>("model number");
+                int points = userDocument.GetValue<int>("points");
+
+                GameObject friendItem = null;
+
+                if (prefabType == "request")
+                {
+                    friendItem = Instantiate(requestPrefab, parent);
+                    Button acceptButton = friendItem.transform.Find("AcceptButton")?.GetComponent<Button>();
+                    Button rejectButton = friendItem.transform.Find("RejectButton")?.GetComponent<Button>();
+
+                    if (acceptButton != null)
+                        acceptButton.onClick.AddListener(() => AcceptFriendRequest(friendUsername));
+                    else
+                        Debug.LogError("AcceptButton not found in requestPrefab.");
+
+                    if (rejectButton != null)
+                        rejectButton.onClick.AddListener(() => RejectFriendRequest(friendUsername));
+                    else
+                        Debug.LogError("RejectButton not found in requestPrefab.");
+                }
+
+                if (friendItem != null)
+                {
+                    friendItem.name = friendUsername;
+                    friendItem.transform.localScale = Vector3.one; // Ensure the scale is (1, 1, 1)
+                    string targetsText = friendUsername + " discovered the following:\n" + string.Join(", ", targetDocumentNames);
+                    RectTransform rectTransform = friendItem.GetComponent<RectTransform>();
+                    rectTransform.sizeDelta = new Vector2(200, 50); // Set to desired size
+                    TMP_Text[] textFields = friendItem.GetComponentsInChildren<TMP_Text>();
+                    Image[] profileImageComponents = friendItem.GetComponentsInChildren<Image>();
+
+                    if (prefabType == "request" && textFields.Length >= 1)
+                    {
+                        textFields[0].text = friendUsername;
+                        textFields[1].text = targetsText;
+                        // Add profile picture using modelNumber
+                        if (modelNumber >= 0 && modelNumber < profileDB.profileCount)
+                        {
+                            Sprite profileSprite = profileDB.GetCharacter(modelNumber).profileSprite;
+
+                            if (profileImageComponents != null && profileImageComponents.Length > 0)
+                            {
+                                // Assuming we want the first Image component found
+                                Image profileImageComponent = profileImageComponents[2];
+
+                                if (profileImageComponent != null)
+                                {
+                                    profileImageComponent.sprite = profileSprite;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Insufficient TMP_Text components found in friendItemPrefab.");
+                    }
+
+                    Debug.Log("Friend added to UI: " + friendUsername);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error adding friend to UI: " + ex);
+            }
+        });
+    }
+
 
     void ClearUIList(Transform parent)
     {
@@ -485,6 +573,14 @@ public class FirestoreFriends : MonoBehaviour
                 }
             });
         }
+    }
+
+    void OpenUserAchievementScene(string userId)
+    {
+        // Set the user achievement ID to PlayerPrefs
+        PlayerPrefs.SetString("userAchievementId", userId);
+        // Open the UserAchievement scene
+        SceneManager.LoadScene("UserAchievement");
     }
 
     public void OpenFriendPanel()
