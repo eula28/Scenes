@@ -92,7 +92,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void Juanito()
     {
-        string name = "Juanito Reyes Remulla";
+        string name = "Juanito Reyes Remulla Statue";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -112,7 +112,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void CathedralMarker()
     {
-        string name = "Imus Cathedral Marker";
+        string name = "Imus Cathedral - Marker";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -132,7 +132,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void Heritage()
     {
-        string name = "Imus Cathedral Heritage Bells";
+        string name = "Imus Cathedral - Heritage Bells";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -152,7 +152,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void Cathedral()
     {
-        string name = "Imus Cathedral";
+        string name = "Imus Cathedral - The Diocesan Shrine and Parish of Our Lady of the Pillar";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -172,7 +172,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void Carabao()
     {
-        string name = "Imus Plaza Carabao";
+        string name = "Imus City Plaza - Carabao's Club";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -192,7 +192,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void Plaza()
     {
-        string name = "Imus Plaza";
+        string name = "Imus City Plaza - Logo";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
@@ -212,7 +212,7 @@ public class TargetAchievements : MonoBehaviour
 
     public async void GenTopacio()
     {
-        string name = "Imus Plaza Gen Topacio";
+        string name = "Imus City Plaza - General Licerio Topacio Statue";
         await CheckFirestoreUserTarget(name);
 
         if (!isFound)
