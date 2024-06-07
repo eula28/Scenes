@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,8 +6,6 @@ using TMPro;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using UnityEngine.SceneManagement;
-
-
 
 public class AvatarGender : MonoBehaviour
 {
@@ -35,7 +34,6 @@ public class AvatarGender : MonoBehaviour
     public Button maleButton;
     public Button femaleButton;
 
-
     // Use the Start() method to set up the button click events
     void Start()
     {
@@ -52,14 +50,12 @@ public class AvatarGender : MonoBehaviour
 
         // Ensure no button is selected initially
         currentlySelectedButton = null;
-
-
     }
+
     void Update()
     {
         gen = gender.text;
-        
-       
+
         checkValue();
 
         if (currentlySelectedButton != null)
@@ -69,22 +65,37 @@ public class AvatarGender : MonoBehaviour
             currentlySelectedButton.colors = colors;
         }
     }
+
     void checkValue()
     {
         month = Month.text;
         date = Date.text;
         year = Year.text;
 
-        if (month != "" && date != "" && year != "" && gen != "" && genderValue != "")
+        if (month != "" && date != "" && year != "" && gen != "" && genderValue != "" && IsValidAge(year, month, date))
         {
             bday = Month.text + "/" + Date.text + "/" + Year.text;
             next.gameObject.SetActive(true);
-
         }
         else
         {
             next.gameObject.SetActive(false);
         }
+    }
+
+    // Method to validate age
+    bool IsValidAge(string year, string month, string day)
+    {
+        if (int.TryParse(year, out int birthYear) && int.TryParse(month, out int birthMonth) && int.TryParse(day, out int birthDay))
+        {
+            DateTime birthDate = new DateTime(birthYear, birthMonth, birthDay);
+            DateTime currentDate = DateTime.Now;
+            TimeSpan ageSpan = currentDate - birthDate;
+            double ageInYears = ageSpan.TotalDays / 365.25;
+
+            return ageInYears >= 10;
+        }
+        return false;
     }
 
     // Define the MaleButton() method
@@ -133,7 +144,6 @@ public class AvatarGender : MonoBehaviour
     {
         nbtn = 0;
         Debug.Log(nbtn);
-
     }
 
     public void updateUserDoc()
@@ -159,7 +169,7 @@ public class AvatarGender : MonoBehaviour
                     Debug.LogError("Failed to update user data: " + task.Exception);
                     return;
                 }
-                else 
+                else
                 {
                     SceneManager.LoadScene("Account");
                     Debug.Log("User data updated successfully for user: " + FirebaseController.Instance.auth.CurrentUser.UserId);
@@ -171,5 +181,4 @@ public class AvatarGender : MonoBehaviour
             Debug.LogError("FirebaseController instance not found.");
         }
     }
-
 }
