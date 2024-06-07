@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Try : MonoBehaviour
 {
     public Button IdeaButton,CaptureButton,BackButton, exit;
-    public GameObject IdeaButtonPanel, juanitoPanel, imuscathedralmarkerPanel, imuscathedralheritagebellsPanel, imuscathedralPanel, imusplazacarabaoPanel, imusplazaPanel, imusplazageneraltopacioPanel, pillarlodgeno3Panel;
+    public GameObject IdeaButtonPanel, juanitoPanel, imuscathedralmarkerPanel, imuscathedralheritagebellsPanel, imuscathedralPanel, imusplazacarabaoPanel, imusplazaPanel, imusplazageneraltopacioPanel, pillarlodgeno3Panel, tulaytomasmascardoPanel,imushistoricalmarkerPanel, labanansaimusPanel, bridgeofisabelPanel, battleofalapanPanel;
 
     public void ideabutton() {
         IdeaButtonPanel.SetActive(true);
@@ -20,6 +20,13 @@ public class Try : MonoBehaviour
         imusplazaPanel.SetActive(false);
         imusplazageneraltopacioPanel.SetActive(false);
         pillarlodgeno3Panel.SetActive(false);
+        tulaytomasmascardoPanel.SetActive(false);
+        imushistoricalmarkerPanel.SetActive(false);
+        labanansaimusPanel.SetActive(false);
+        bridgeofisabelPanel.SetActive(false);
+        battleofalapanPanel.SetActive(false);
+
+        
     }
     public void Exit()
     {
@@ -135,6 +142,71 @@ public class Try : MonoBehaviour
     }
     public void PillarLodgeNo3PanelRemove(){
         pillarlodgeno3Panel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void tulaytomasmascardo_btn()
+    {
+        tulaytomasmascardoPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void TulayTomasMascardoPanelRemove(){
+        tulaytomasmascardoPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void imushistoricalmarker_btn()
+    {
+        imushistoricalmarkerPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void ImusHistoricalMarkerPanelRemove(){
+        imushistoricalmarkerPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void labanansaimus_btn()
+    {
+        labanansaimusPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void LabananSaImusPanelRemove(){
+        labanansaimusPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void bridgeofisabel_btn()
+    {
+        bridgeofisabelPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void BridgeOfIsabelPanelRemove(){
+        bridgeofisabelPanel.SetActive(false);
+    }
+
+//======================================================================================================================
+    public void battleofalapan_btn()
+    {
+        battleofalapanPanel.SetActive(true);
+        IdeaButtonPanel.SetActive(false);
+        IdeaButton.gameObject.SetActive(true);
+        CaptureButton.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+    }
+    public void BattleOfAlapanPanelRemove(){
+        battleofalapanPanel.SetActive(false);
     }
 
 }
