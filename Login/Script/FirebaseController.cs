@@ -176,7 +176,7 @@ public class FirebaseController : MonoBehaviour
         else
         {
             // Validate password format
-            Regex regex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$");
+            Regex regex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$");
             if (!regex.IsMatch(signupPassword.text))
             {
                 ShowAlert("Password must be at least 8 characters in length, should contain at least one upper case, one lowercase, one digit, and one special character.");
