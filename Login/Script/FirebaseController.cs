@@ -176,7 +176,7 @@ public class FirebaseController : MonoBehaviour
         else
         {
             // Validate password format
-            Regex regex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$");
+            Regex regex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$");
             if (!regex.IsMatch(signupPassword.text))
             {
                 ShowAlert("Password must be at least 8 characters in length, should contain at least one upper case, one lowercase, one digit, and one special character.");
@@ -596,13 +596,13 @@ public class FirebaseController : MonoBehaviour
             // Create subcollections for user targets
             AddMultipleUserTargets(userId, new List<(string, bool)>
             {
-                ("Juanito Reyes Remulla", false),
-                ("Imus Cathedral Marker", false),
-                ("Imus Cathedral Heritage Bells", false),
-                ("Imus Cathedral", false),
-                ("Imus Plaza Carabao", false),
-                ("Imus Plaza", false),
-                ("Imus Plaza Gen Topacio", false),
+                ("Juanito Reyes Remulla Statue", false),
+                ("Imus Cathedral - Marker", false),
+                ("Imus Cathedral - Heritage Bells", false),
+                ("Imus Cathedral - The Diocesan Shrine and Parish of Our Lady of the Pillar", false),
+                ("Imus City Plaza - Carabao's Club", false),
+                ("Imus City Plaza - Logo", false),
+                ("Imus City Plaza - General Licerio Topacio Statue", false),
                 ("Pillar Lodge No.3", false)
             });
         });
