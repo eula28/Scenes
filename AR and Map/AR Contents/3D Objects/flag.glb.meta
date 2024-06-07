@@ -29,3 +29,7 @@ ScriptedImporter:
     code: 52
     messages:
     - 2
+  - type: 0
+    code: 52
+    messages:
+    - 2
