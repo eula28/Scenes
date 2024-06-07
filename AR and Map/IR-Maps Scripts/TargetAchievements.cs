@@ -249,4 +249,84 @@ public class TargetAchievements : MonoBehaviour
             Debug.Log("Target Counted");
         }
     }
+
+    public async void TulayTomas()
+    {
+        string name = "Tulay Tomas Mascardo";
+        await CheckFirestoreUserTarget(name);
+
+        if (!isFound)
+        {
+            UpdateUserTarget(name);
+            Dictionary<string, object> userActions = new Dictionary<string, object>
+            {
+                { "5AR", 1 },
+                { "10AR", 1 },
+                { "15AR", 1 }
+            };
+            // Use the user ID instead of the username
+            await achievementScript.UpdateUserAchievements(userId, userActions);
+            Debug.Log("Target Counted");
+        }
+    }
+
+    public async void ImusHistorical()
+    {
+        string name = "Imus Historical Landmark";
+        await CheckFirestoreUserTarget(name);
+
+        if (!isFound)
+        {
+            UpdateUserTarget(name);
+            Dictionary<string, object> userActions = new Dictionary<string, object>
+            {
+                { "5AR", 1 },
+                { "10AR", 1 },
+                { "15AR", 1 }
+            };
+            // Use the user ID instead of the username
+            await achievementScript.UpdateUserAchievements(userId, userActions);
+            Debug.Log("Target Counted");
+        }
+    }
+
+    public async void Labanan()
+    {
+        string name = "Labanan sa Imus";
+        await CheckFirestoreUserTarget(name);
+
+        if (!isFound)
+        {
+            UpdateUserTarget(name);
+            Dictionary<string, object> userActions = new Dictionary<string, object>
+            {
+                { "5AR", 1 },
+                { "10AR", 1 },
+                { "15AR", 1 }
+            };
+            // Use the user ID instead of the username
+            await achievementScript.UpdateUserAchievements(userId, userActions);
+            Debug.Log("Target Counted");
+        }
+    }
+
+    public async void Bridge()
+    {
+        string name = "Bridge of Isabel";
+        await CheckFirestoreUserTarget(name);
+
+        if (!isFound)
+        {
+            UpdateUserTarget(name);
+            Dictionary<string, object> userActions = new Dictionary<string, object>
+            {
+                { "5AR", 1 },
+                { "10AR", 1 },
+                { "15AR", 1 }
+            };
+            // Use the user ID instead of the username
+            await achievementScript.UpdateUserAchievements(userId, userActions);
+            Debug.Log("Target Counted");
+        }
+    }
 }

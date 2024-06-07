@@ -603,7 +603,11 @@ public class FirebaseController : MonoBehaviour
                 ("Imus City Plaza - Carabao's Club", false),
                 ("Imus City Plaza - Logo", false),
                 ("Imus City Plaza - General Licerio Topacio Statue", false),
-                ("Pillar Lodge No.3", false)
+                ("Pillar Lodge No.3", false),
+                ("Tulay Tomas Mascardo", false),
+                ("Imus Historical Landmark", false),
+                ("Labanan sa Imus", false),
+                ("Bridge of Isabel", false)
             });
         });
     }
