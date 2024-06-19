@@ -540,7 +540,7 @@ public class FirestoreFriends : MonoBehaviour
 
     public void SearchUsers()
     {
-        string searchTerm = searchReceiverUsername.text.Trim();
+        string searchTerm = searchReceiverUsername.text.Trim().ToLower(); // Convert search term to lowercase
 
         if (!string.IsNullOrEmpty(searchTerm))
         {
@@ -548,34 +548,40 @@ public class FirestoreFriends : MonoBehaviour
             {
                 try
                 {
-                    var querySnapshot = await db.Collection("users")
-                        .WhereEqualTo("username", searchTerm)
-                        .WhereNotEqualTo("username", currentUsername)
-                        .GetSnapshotAsync();
+                    // Fetch all usernames from Firestore
+                    var querySnapshot = await db.Collection("users").GetSnapshotAsync();
 
-                    ClearUIList(friendsListParent);
+
+                    ClearUIList(searchFriendListParent);
 
                     foreach (DocumentSnapshot document in querySnapshot.Documents)
                     {
-                        string foundUsername = document.GetValue<string>("username");
+                        string foundUsername = document.GetValue<string>("username");//
+                        string foundUsernamelow = document.GetValue<string>("username").ToLower(); // Convert stored username to lowercase
 
-                        var friendRequestSnapshot = await db.Collection("friendRequests")
-                            .WhereEqualTo("requester", currentUsername)
-                            .WhereEqualTo("receiver", foundUsername)
-                            .WhereEqualTo("status", "pending")
-                            .GetSnapshotAsync();
+                        // Perform case-insensitive substring search
+                        if (foundUsernamelow.Contains(searchTerm) && foundUsername != currentUsername)
+                        {
+                            // Check if friend request already exists
+                            var friendRequestSnapshot = await db.Collection("friendRequests")
+                                .WhereEqualTo("requester", currentUsername)
+                                .WhereEqualTo("receiver", foundUsername)
+                                .WhereEqualTo("status", "pending")
+                                .GetSnapshotAsync();
 
-                        if (friendRequestSnapshot.Documents.Count() == 0)
-                        {
-                            AddFriendToUI(searchFriendListParent, foundUsername, "search");
-                            searchReceiverUsername.text = "";
-                            Debug.Log("User Found!." + foundUsername);
-                        }
-                        else
-                        {
-                            Debug.Log("Friend request already sent.");
+                            if (friendRequestSnapshot.Documents.Count() == 0)
+                            {
+                                AddFriendToUI(searchFriendListParent, foundUsername, "search");
+                                Debug.Log("User Found: " + foundUsername);
+                            }
+                            else
+                            {
+                                Debug.Log("Friend request already sent to: " + foundUsername);
+                            }
                         }
                     }
+
+                    searchReceiverUsername.text = ""; // Clear search input after processing
                 }
                 catch (Exception ex)
                 {
