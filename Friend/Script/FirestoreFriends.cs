@@ -481,7 +481,7 @@ public class FirestoreFriends : MonoBehaviour
                     string targetsText;
                     if (targetDocumentNames != null && targetDocumentNames.Count > 0)
                     {
-                        targetsText = friendUsername + " discovered the following in Imus City:\n" + string.Join(", ", targetDocumentNames);
+                        targetsText = friendUsername + "'s discoveries in Imus City:\n" + string.Join(", ", targetDocumentNames);
                     }
                     else
                     {
