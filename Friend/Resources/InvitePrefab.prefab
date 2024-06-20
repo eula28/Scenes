@@ -111,8 +111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 460.53812, y: -39.815002}
-  m_SizeDelta: {x: 334.3861, y: 79.63}
+  m_AnchoredPosition: {x: 320.02692, y: -39.815002}
+  m_SizeDelta: {x: 562.8193, y: 79.63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7135921187510218114
 CanvasRenderer:
@@ -142,12 +142,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '
-
-'
+  m_text: ARNIE MONICA A. DEL ROSARIO
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
-  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c5ff2847afb1ca74d9e00ceeda67f283, type: 2}
+  m_sharedMaterial: {fileID: -3488958872866268455, guid: c5ff2847afb1ca74d9e00ceeda67f283,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -171,15 +170,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 33.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 40
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -245,10 +244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1888346909451273794}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 171.5, y: -129.5}
-  m_SizeDelta: {x: 343, y: 259}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3654179577284760935
 CanvasRenderer:
@@ -278,7 +277,30 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 'AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO
+    NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO
+    NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAAAYOKO
+    NAAAAAAAAAAAAAAAAAAAAA
+
+    AYOKO NAAAAAAAAAAAAAAAAAAAAA
+
+    RAWR
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e8d04dabb7e825942807908b4ca50217, type: 2}
   m_sharedMaterial: {fileID: 764776798484613031, guid: e8d04dabb7e825942807908b4ca50217,
@@ -306,7 +328,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.6
+  m_fontSize: 30
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -342,7 +364,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 2.7099, y: 0, z: 0, w: 0}
+  m_margin: {x: 2.7099, y: 0, z: 11.70105, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -728,7 +750,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7.0699, y: -13.536872}
+  m_AnchoredPosition: {x: -0.000023365, y: -469.63}
   m_SizeDelta: {x: 329.51, y: 0}
   m_Pivot: {x: 0.49999994, y: 0.45000067}
 --- !u!114 &6521519092751317291
@@ -747,11 +769,11 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 550
   m_ChildAlignment: 0
   m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 343, y: 259}
+  m_StartAxis: 1
+  m_CellSize: {x: 343, y: 550}
   m_Spacing: {x: 20, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 1
