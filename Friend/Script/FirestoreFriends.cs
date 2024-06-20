@@ -505,7 +505,7 @@ public class FirestoreFriends : MonoBehaviour
                             if (profileImageComponents != null && profileImageComponents.Length > 0)
                             {
                                 // Assuming we want the first Image component found
-                                Image profileImageComponent = profileImageComponents[2];
+                                Image profileImageComponent = profileImageComponents[3];
 
                                 if (profileImageComponent != null)
                                 {
